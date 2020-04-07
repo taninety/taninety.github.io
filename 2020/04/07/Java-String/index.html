@@ -20,17 +20,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="进一寸有一寸的欢喜">
-<meta property="og:type" content="website">
-<meta property="og:title" content="知也无涯">
-<meta property="og:url" content="http://yoursite.com/archives/2020/04/index.html">
+  <meta name="description" content="问题收集与解答1. Java 创建 String 有哪些方式，有什么区别 两种方式： a. 将字符串字面量，直接赋值给 String。String str &#x3D; &quot;Hello world&quot; a. 将字符串字面量作为参数传给 String 对象的构造函数。String str &#x3D; new String(&quot;Hello world&quot;) 方式a    2. 字符串可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java String">
+<meta property="og:url" content="http://yoursite.com/2020/04/07/Java-String/index.html">
 <meta property="og:site_name" content="知也无涯">
-<meta property="og:description" content="进一寸有一寸的欢喜">
+<meta property="og:description" content="问题收集与解答1. Java 创建 String 有哪些方式，有什么区别 两种方式： a. 将字符串字面量，直接赋值给 String。String str &#x3D; &quot;Hello world&quot; a. 将字符串字面量作为参数传给 String 对象的构造函数。String str &#x3D; new String(&quot;Hello world&quot;) 方式a    2. 字符串可以">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-07T08:16:09.000Z">
+<meta property="article:modified_time" content="2020-04-07T08:16:57.925Z">
 <meta property="article:author" content="Taninety">
+<meta property="article:tag" content="java">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/archives/2020/04/">
+<link rel="canonical" href="http://yoursite.com/2020/04/07/Java-String/">
 
 
 <script id="page-configurations">
@@ -38,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | 知也无涯</title>
+  <title>Java String | 知也无涯</title>
   
 
 
@@ -146,70 +149,95 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 2 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/07/Java-String/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Taninety">
+      <meta itemprop="description" content="进一寸有一寸的欢喜">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="知也无涯">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java String
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-07 16:16:09 / 修改时间：16:16:57" itemprop="dateCreated datePublished" datetime="2020-04-07T16:16:09+08:00">2020-04-07</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
+        <h1 id="问题收集与解答"><a href="#问题收集与解答" class="headerlink" title="问题收集与解答"></a>问题收集与解答</h1><p><strong>1. Java 创建 String 有哪些方式，有什么区别</strong></p>
+<p>两种方式：</p>
+<p>a. 将字符串字面量，直接赋值给 String。<br><code>String str = &quot;Hello world&quot;</code></p>
+<p>a. 将字符串字面量作为参数传给 String 对象的构造函数。<br><code>String str = new String(&quot;Hello world&quot;)</code></p>
+<p>方式a   </p>
+<p><strong>2. 字符串可以被修改吗？为什么做成这样？</strong></p>
+<p><strong>3. String a = “abc”, String b = new String(“abc”); a == b 的值是？</strong></p>
+<p><strong>4. String a = “abc” 放在java虚拟内存的哪个区域？</strong></p>
+<p><strong>5. String builder 和 StringBuffer 线程安全吗？</strong></p>
+<p><strong>6. String, StringBuffer, StringBuilder三个区别？</strong></p>
+<p><strong>7. StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？</strong></p>
+<h1 id="String-梳理"><a href="#String-梳理" class="headerlink" title="String 梳理"></a>String 梳理</h1><ul>
+<li>String</li>
+<li>StringBuffer</li>
+<li>StringBuilder</li>
+</ul>
+<h4 id="发展历史"><a href="#发展历史" class="headerlink" title="发展历史"></a>发展历史</h4><h4 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h4>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-07T16:16:09+08:00"
-              content="2020-04-07">
-          04-07
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/04/07/Java-String/" itemprop="url">
-            <span itemprop="name">Java String</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-04-07T15:20:50+08:00"
-              content="2020-04-07">
-          04-07
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2020/04/07/start/" itemprop="url">
-            <span itemprop="name">开始</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+        
 
 
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/07/start/" rel="prev" title="开始">
+      <i class="fa fa-chevron-left"></i> 开始
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-  </div>
+      </footer>
+    
+  </article>
   
   
-  
-
   
 
 
@@ -262,6 +290,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题收集与解答"><span class="nav-number">1.</span> <span class="nav-text">问题收集与解答</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#String-梳理"><span class="nav-number">2.</span> <span class="nav-text">String 梳理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发展历史"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">发展历史</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#区别"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">区别</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
