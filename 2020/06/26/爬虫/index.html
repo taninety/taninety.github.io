@@ -99,8 +99,49 @@
         </span></div>
     </header>
 
-    <div class="post-content"><p>Twitter爬虫<br>Instagram爬虫</p>
-
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#项目介绍"><span class="toc-text">项目介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用步骤"><span class="toc-text">使用步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关问题"><span class="toc-text">相关问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能优化及功能改进"><span class="toc-text">性能优化及功能改进</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><p>该项目通过抓取 Twitter 及 Instagram HTTP Response 返回的 json 文本来获取网页内容。不需要使用 API。灵感来源于<a href="https://cloud.tencent.com/developer/article/1549872" target="_blank" rel="noopener">这篇文章</a>。</p>
+<p>可以实现的功能包括</p>
+<ul>
+<li>输入一组 Twitter / Instagram条目链接，获得包含正文全部内容和当前用户信息的 json 文件，以及条目中涉及的图片和视频文件</li>
+</ul>
+<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><p>下载需要的软件</p>
+<ul>
+<li><a href="https://github.com/browserup/browserup-proxy/releases/" target="_blank" rel="noopener">browserup-proxy</a> </li>
+<li><a href="https://chromedriver.chromium.org/downloads" target="_blank" rel="noopener">chromedriver</a></li>
+</ul>
+<p>安装 browserup-proxy-py 包</p>
+<ul>
+<li><code>pip install git+https://github.com/browserup/browserup-proxy-py.git@master#egg=browserup-proxy==0.1.0</code></li>
+</ul>
+<p>设置脚本中的常量</p>
+<ul>
+<li>proxies: python requests 命令使用的代理</li>
+<li>browserupproxy_path: browserup-proxy 可执行文件存放的路径 <code>r&#39;*******\browserup-proxy.bat&#39;</code></li>
+<li>chromedriver_path: chromedriver 可执行文件存放的路径 <code>r&#39;*******\chromedriver.exe&#39;</code></li>
+<li>instagram_username: instagram爬虫登录用的用户名</li>
+<li>instagram_password: instagram爬虫登录用的密码</li>
+<li>instagram_cookie_file: instagram临时cookies文件存放的位置，无需修改</li>
+</ul>
+<p>创建输入文件</p>
+<ul>
+<li>文件名标准格式为 <code>yyyymm.urls</code></li>
+<li>每行放置一条 twitter 或 instagram 网址，以 https 开头</li>
+<li>支持两种注释，开头前四个字母不是 http 的行被视为注释，每行空格之后的内容被视为注释</li>
+</ul>
+<p>配置合适的代理规则</p>
+<ul>
+<li><code>java.exe</code> 配置Proxifier代理，确保 browserup-proxy 能够连接 Twitter 和 Instagram服务器</li>
+<li><code>chrome.exe</code> 及 <code>python.exe</code> 不配置Proxifier代理，否则会影响 browserup-proxy 运行</li>
+<li><code>python requests 方法</code> 设置http及https代理，详见设置脚本中的常量</li>
+</ul>
+<h2 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h2><p><strong>为什么不用原版的 <a href="https://github.com/lightbody/browsermob-proxy" target="_blank" rel="noopener">browsermob-proxy</a>，而使用它的Fork版 <a href="https://github.com/browserup/browserup-proxy" target="_blank" rel="noopener">browserup-proxy</a></strong> </p>
+<p>browsermob-proxy 已经停止维护，其中一个 <a href="https://github.com/lightbody/browsermob-proxy/pull/731" target="_blank" rel="noopener">Bug</a> 导致该脚本无法正常抓取网页内容</p>
+<h2 id="性能优化及功能改进"><a href="#性能优化及功能改进" class="headerlink" title="性能优化及功能改进"></a>性能优化及功能改进</h2>
       </div>
       <div class="post-copyright">
     <p class="copyright-item">

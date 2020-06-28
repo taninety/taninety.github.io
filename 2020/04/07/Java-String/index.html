@@ -102,7 +102,7 @@
     <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">Contents</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题收集"><span class="toc-text">问题收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题解答"><span class="toc-text">问题解答</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#问题：Java-创建-String-有哪些方式，有什么区别"><span class="toc-text">问题：Java 创建 String 有哪些方式，有什么区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题：字符串可以被修改吗？为什么做成这样？"><span class="toc-text">问题：字符串可以被修改吗？为什么做成这样？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题：String-a-“abc”-String-b-new-String-“abc”-a-b-的值是？"><span class="toc-text">问题：String a &#x3D; “abc”, String b &#x3D; new String(“abc”); a &#x3D;&#x3D; b 的值是？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题：String-a-“abc”-放在java虚拟内存的哪个区域？"><span class="toc-text">问题：String a &#x3D; “abc” 放在java虚拟内存的哪个区域？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题：String-builder-和-StringBuffer-线程安全吗？"><span class="toc-text">问题：String builder 和 StringBuffer 线程安全吗？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题：String-StringBuffer-StringBuilder三个区别？"><span class="toc-text">问题：String, StringBuffer, StringBuilder三个区别？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题：-StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？"><span class="toc-text">问题： StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#String-类型梳理"><span class="toc-text">String 类型梳理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#发展历史"><span class="toc-text">发展历史</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#区别"><span class="toc-text">区别</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题收集"><span class="toc-text">问题收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题解答"><span class="toc-text">问题解答</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#String-类型梳理"><span class="toc-text">String 类型梳理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#发展历史"><span class="toc-text">发展历史</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#区别"><span class="toc-text">区别</span></a></li></ol></li></ol></li></ol>
     </div>
   </div><div class="post-content"><h2 id="问题收集"><a href="#问题收集" class="headerlink" title="问题收集"></a>问题收集</h2><ol>
 <li>Java 创建 String 有哪些方式，有什么区别</li>
@@ -113,13 +113,19 @@
 <li>String, StringBuffer, StringBuilder三个区别？</li>
 <li>StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？</li>
 </ol>
-<h2 id="问题解答"><a href="#问题解答" class="headerlink" title="问题解答"></a>问题解答</h2><h4 id="问题：Java-创建-String-有哪些方式，有什么区别"><a href="#问题：Java-创建-String-有哪些方式，有什么区别" class="headerlink" title="问题：Java 创建 String 有哪些方式，有什么区别"></a>问题：Java 创建 String 有哪些方式，有什么区别</h4><ul>
+<h2 id="问题解答"><a href="#问题解答" class="headerlink" title="问题解答"></a>问题解答</h2><p><strong>问题：Java 创建 String 有哪些方式，有什么区别</strong></p>
+<ul>
 <li>将字符串字面量，直接赋值给 String。 <code>String str = &quot;Hello world&quot;</code></li>
 <li>将字符串字面量作为参数传给 String 对象的构造函数。 <code>String str = new String(&quot;Hello world&quot;)</code></li>
 </ul>
 <p>直接赋值，<br>作为对象的参数赋值，</p>
-<hr>
-<h4 id="问题：字符串可以被修改吗？为什么做成这样？"><a href="#问题：字符串可以被修改吗？为什么做成这样？" class="headerlink" title="问题：字符串可以被修改吗？为什么做成这样？"></a>问题：字符串可以被修改吗？为什么做成这样？</h4><h4 id="问题：String-a-“abc”-String-b-new-String-“abc”-a-b-的值是？"><a href="#问题：String-a-“abc”-String-b-new-String-“abc”-a-b-的值是？" class="headerlink" title="问题：String a = “abc”, String b = new String(“abc”); a == b 的值是？"></a>问题：String a = “abc”, String b = new String(“abc”); a == b 的值是？</h4><h4 id="问题：String-a-“abc”-放在java虚拟内存的哪个区域？"><a href="#问题：String-a-“abc”-放在java虚拟内存的哪个区域？" class="headerlink" title="问题：String a = “abc” 放在java虚拟内存的哪个区域？"></a>问题：String a = “abc” 放在java虚拟内存的哪个区域？</h4><h4 id="问题：String-builder-和-StringBuffer-线程安全吗？"><a href="#问题：String-builder-和-StringBuffer-线程安全吗？" class="headerlink" title="问题：String builder 和 StringBuffer 线程安全吗？"></a>问题：String builder 和 StringBuffer 线程安全吗？</h4><h4 id="问题：String-StringBuffer-StringBuilder三个区别？"><a href="#问题：String-StringBuffer-StringBuilder三个区别？" class="headerlink" title="问题：String, StringBuffer, StringBuilder三个区别？"></a>问题：String, StringBuffer, StringBuilder三个区别？</h4><h4 id="问题：-StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？"><a href="#问题：-StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？" class="headerlink" title="问题： StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？"></a>问题： StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？</h4><h2 id="String-类型梳理"><a href="#String-类型梳理" class="headerlink" title="String 类型梳理"></a>String 类型梳理</h2><ul>
+<p><strong>问题：字符串可以被修改吗？为什么做成这样？</strong></p>
+<p><strong>问题：String a = “abc”, String b = new String(“abc”); a == b 的值是？</strong></p>
+<p><strong>问题：String a = “abc” 放在java虚拟内存的哪个区域？</strong></p>
+<p><strong>问题：String builder 和 StringBuffer 线程安全吗？</strong></p>
+<p><strong>问题：String, StringBuffer, StringBuilder三个区别？</strong></p>
+<p><strong>问题： StringBuiler缺点，和StringBuffer相比，线程安全是怎么处理的？</strong></p>
+<h2 id="String-类型梳理"><a href="#String-类型梳理" class="headerlink" title="String 类型梳理"></a>String 类型梳理</h2><ul>
 <li>String</li>
 <li>StringBuffer</li>
 <li>StringBuilder</li>
