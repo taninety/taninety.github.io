@@ -104,9 +104,11 @@
     <div class="post-toc-content">
       <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#面试问题"><span class="toc-text">面试问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#知识梳理"><span class="toc-text">知识梳理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-text">参考资料</span></a></li></ol>
     </div>
-  </div><div class="post-content"><h2 id="面试问题"><a href="#面试问题" class="headerlink" title="面试问题"></a>面试问题</h2><p><strong>1. list，set，map 有什么区别？</strong></p>
-<p>这些都是java的集合类</p>
-<p>Set，继承自Collection，表示一组对象的集合，元素无序且不重复</p>
+  </div><div class="post-content"><h2 id="面试问题"><a href="#面试问题" class="headerlink" title="面试问题"></a>面试问题</h2><blockquote>
+<p>list，set，map 有什么区别？</p>
+</blockquote>
+<p>这些都是 java 的集合类</p>
+<p>Set，继承自 Collection，表示一组对象的集合，元素无序且不重复</p>
 <ul>
 <li>HashSet，散列形式，无法排序</li>
 <li>TreeSet，以二叉树结构存储，可以对元素进行排序</li>
@@ -124,20 +126,26 @@
 <li>TreeMap，可以对键进行排序</li>
 <li>LinkedHashMap，和HashMap相比，它是有序的</li>
 </ul>
-<p><strong>2. ArrayList 和 LinkedList 有什么区别？</strong></p>
+<blockquote>
+<p>ArrayList 和 LinkedList 有什么区别？</p>
+</blockquote>
 <p>都实现了 List 所有未实现的方法，但实现方式不同</p>
 <ul>
 <li>ArrayList 于动态数组的数据结构，LinkedList基于链表的数据结构</li>
 <li>对于随机访问 get 和 set， ArrayList 优于 Linked</li>
 <li>对于新增和删除操作 add 和 remove，LinkedList 优于 ArrayList</li>
 </ul>
-<p><strong>3. ArrayMap 和 HashMap 有什么区别？</strong></p>
+<blockquote>
+<p>ArrayMap 和 HashMap 有什么区别？</p>
+</blockquote>
 <p>ArrayMap内部使用两个数组进行数据存储，一个数组记录key的hash值，一个数组记录Value值<br>HashMap内部使用一个默认容量为16的数组来存储数据，数组的每一个元素是是一个链表的头结点。</p>
 <ul>
 <li>ArrayMap 内存占用小于 HashMap</li>
 <li>ArrayMap 处理速度慢于 HashMap，ArrayMap 不适合大量数据</li>
 </ul>
-<p><strong>4. HashMap 和 Hashtable 有什么区别？</strong></p>
+<blockquote>
+<p>HashMap 和 Hashtable 有什么区别？</p>
+</blockquote>
 <ul>
 <li>HashMap 继承于 AbstractMap，Hashtable 继承于 Dictionary</li>
 <li>Hashtable 线程安全， HashMap 线程不安全</li>
@@ -146,11 +154,17 @@
 <li>HashMap默认容量16，增加容量时原始容量x2，Hashtable默认容量大小11，增加容量时，原始容量x2+1</li>
 <li>HashMap 添加元素时，使用自定义算法，Hashtable 直接采用 key的 hashCode()</li>
 </ul>
-<p><strong>5. Hashmap的实现原理？</strong></p>
+<blockquote>
+<p>HashMap 的实现原理？</p>
+</blockquote>
 <p>HashMap内部使用一个默认容量为16的数组来存储数据，数组的每一个元素是是一个链表的头结点。</p>
-<p><strong>6. HashMap是线程安全的吗？</strong></p>
+<blockquote>
+<p>HashMap是线程安全的吗？</p>
+</blockquote>
 <p>不是</p>
-<p><strong>7. 如果hashmap特别大的话，什么情况下会触发扩容？</strong></p>
+<blockquote>
+<p>如果HashMap特别大的话，什么情况下会触发扩容？</p>
+</blockquote>
 <p>当 map 中包含的 Entry 数量大于等于 threshold = loadFactor * capacity 的时候，且新建的 Entry 正好落在一个非空的桶上，触发扩容机制，将容量扩大2倍<br>其中 loadFactor 默认为 <a href="http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/HashMap.java#l247" target="_blank" rel="noopener">0.75</a>， capcity 默认为 <a href="http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/687fd7c7986d/src/share/classes/java/util/HashMap.java#l235" target="_blank" rel="noopener">16</a></p>
 <h2 id="知识梳理"><a href="#知识梳理" class="headerlink" title="知识梳理"></a>知识梳理</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><a href="https://www.shuzhiduo.com/A/Gkz1o73N5R/" target="_blank" rel="noopener">Java集合常用类特点整理</a></li>
@@ -171,7 +185,7 @@
         <span class="prev-text nav-mobile">上一篇</span>
       </a>
     <a class="next" href="/2020/07/10/scoop/">
-        <span class="next-text nav-default">scoop 使用</span>
+        <span class="next-text nav-default">Scoop 使用</span>
         <span class="prev-text nav-mobile">下一篇</span>
         <i class="iconfont icon-right"></i>
       </a>
