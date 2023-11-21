@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            Robocode 初探 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>Robocode 初探</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2020/07/08</span>
+            </div>
+            
+            <div class="post-content">
+                <p>十年前第一次知道 Robocode，今天总算开了个头，拖延症真可怕。</p>
+<h2 id="计划"><a href="#计划" class="headerlink" title="计划"></a>计划</h2><ol>
+<li>利用 <a target="_blank" rel="noopener" href="https://robocode.sourceforge.io/docs/robocode/">Robot</a> 类，写一个可以打败所有 Sample 坦克的方案</li>
+<li>优化 <a target="_blank" rel="noopener" href="https://robocode.sourceforge.io/docs/robocode/">Robot</a> 类坦克</li>
+<li>使用 <a target="_blank" rel="noopener" href="https://robocode.sourceforge.io/docs/robocode/robocode/AdvancedRobot.html">AdvanceRobot</a> 类优化坦克方案</li>
+</ol>
+<h2 id="准备知识"><a href="#准备知识" class="headerlink" title="准备知识"></a>准备知识</h2><h4 id="Sample-坦克种类"><a href="#Sample-坦克种类" class="headerlink" title="Sample 坦克种类"></a>Sample 坦克种类</h4><ul>
+<li>Corners：停留在四个角落</li>
+<li>Crazy</li>
+<li>Fire：原地开炮</li>
+<li>Interactive</li>
+<li>RamFire</li>
+<li>SittingDuck：静止不动</li>
+<li>SpinBot</li>
+<li>Target</li>
+<li>Tracker</li>
+<li>VelociRobot</li>
+<li>Walls：绕墙壁运动</li>
+</ul>
+<h4 id="Robot-能力"><a href="#Robot-能力" class="headerlink" title="Robot 能力"></a>Robot 能力</h4><p>Robot 类</p>
+<ul>
+<li>ahead()</li>
+<li>back()</li>
+<li>fire()</li>
+<li>getGunHeat()</li>
+<li>getHeading()：正上方是0度，顺时针旋转累加到360度。指示的车头面对的方向</li>
+<li>getVelocity()</li>
+<li>getX()</li>
+<li>getY()</li>
+<li>scan()</li>
+<li>turnGunLeft()</li>
+<li>turnGunRight()</li>
+<li>turnLeft()</li>
+<li>turnRight()</li>
+</ul>
+<p>ScannedRobotEvent 类</p>
+<ul>
+<li>getBearing()：两个物体之间的，以自己车头的正前方为0度，另一个物体在逆时针方向为负，顺时针方向为正，-180度到180度</li>
+<li>getHeading()</li>
+<li>getDistance()</li>
+<li>getEnergy()</li>
+<li>getVelocity()</li>
+</ul>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p>(完善中..)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> taninety;</span><br><span class="line"><span class="keyword">import</span> robocode.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Myself1</span> <span class="keyword">extends</span> <span class="title class_">Robot</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">			turnGunRight(<span class="number">360</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onScannedRobot</span><span class="params">(ScannedRobotEvent e)</span> &#123;</span><br><span class="line">		fire(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onHitByBullet</span><span class="params">(HitByBulletEvent e)</span> &#123;</span><br><span class="line">		back(<span class="number">10</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onHitWall</span><span class="params">(HitWallEvent e)</span> &#123;</span><br><span class="line">		back(<span class="number">20</span>);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://robocode.sourceforge.io/">Robocode 官网</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/java/j-dodge/index.html">Robocode 高手的秘诀：躲避子弹</a></li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2023 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>

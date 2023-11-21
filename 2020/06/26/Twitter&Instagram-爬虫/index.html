@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            Twitter &amp; Instagram 爬虫 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>Twitter &amp; Instagram 爬虫</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2020/06/26</span>
+            </div>
+            
+            <div class="post-content">
+                <h2 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h2><p>此<a target="_blank" rel="noopener" href="https://github.com/taninety/TweetCrawler">项目</a>通过抓取 Twitter 及 Instagram HTTP Response 返回的 json 文件来获取网页内容。不需要使用官方 API。使用 Selenium 和 browserup-proxy 实现。灵感源自<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1549872">这篇文章</a></p>
+<p>目前的功能包括：输入一组 Twitter 或 Instagram 条目链接，获得包含正文内容和当前用户信息的 json 文件，以及条目中出现的图片和视频文件</p>
+<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><h4 id="1-下载必要的软件"><a href="#1-下载必要的软件" class="headerlink" title="1.下载必要的软件"></a>1.下载必要的软件</h4><p><a target="_blank" rel="noopener" href="https://chromedriver.chromium.org/downloads">chromedriver</a><br><a target="_blank" rel="noopener" href="https://github.com/browserup/browserup-proxy/releases/">browserup-proxy</a> </p>
+<h4 id="2-安装python包"><a href="#2-安装python包" class="headerlink" title="2.安装python包"></a>2.安装python包</h4><p><code>pip install selenium</code><br><code>pip install git+https://github.com/browserup/browserup-proxy-py.git@master#egg=browserup-proxy==0.1.0</code><br><code>pip install pytz</code></p>
+<h4 id="3-设置脚本中常量"><a href="#3-设置脚本中常量" class="headerlink" title="3.设置脚本中常量"></a>3.设置脚本中常量</h4><p><code>proxies</code> python requests 方法使用的代理<br><code>browserupproxy_path</code> browserup-proxy 可执行文件存放的路径 <code>r&#39;*******\browserup-proxy.bat&#39;</code><br><code>chromedriver_path</code> chromedriver 可执行文件存放的路径 <code>r&#39;*******\chromedriver.exe&#39;</code><br><code>instagram_username</code> instagram 爬虫登录用的用户名<br><code>instagram_password</code> instagram 爬虫登录用的密码<br><code>instagram_cookie_file</code> instagram 临时 cookies 文件存放的位置，无需修改</p>
+<h4 id="4-创建输入文件"><a href="#4-创建输入文件" class="headerlink" title="4.创建输入文件"></a>4.创建输入文件</h4><p>文件名标准格式为 <code>yyyymm.urls</code>，保存输出文件的文件夹会自动以此命名<br>每行放置一条 twitter 或 instagram 网址，以 <code>http</code> 或 <code>https</code> 开头<br>支持两种注释，行首前四个字母不是 <code>http</code> 的行被视为注释，每行空格之后的内容被视为注释</p>
+<h4 id="5-配置代理规则"><a href="#5-配置代理规则" class="headerlink" title="5.配置代理规则"></a>5.配置代理规则</h4><p>进程全局代理，可使用 Proxifier<br><code>java.exe</code> 需要配置代理，确保 browserup-proxy 能够连接 Twitter 等网站<br><code>chrome.exe</code> 及 <code>python.exe</code> 不可配置代理，否则会影响 browserup-proxy 运行</p>
+<p>脚本中 <code>requests</code> 方法，需要设置 http 及 https 代理，以确保在 <code>python.exe</code> 进程未配置全局代理的情况下，能够连接 Twitter 等网站，详见“3.设置脚本中常量”</p>
+<h4 id="6-运行脚本"><a href="#6-运行脚本" class="headerlink" title="6.运行脚本"></a>6.运行脚本</h4><p><code>python TweetCrawler.py</code> 下载输入文件 <code>yyyymm.urls</code> 中的所有链接至 yyyymm 文件夹<br><code>python TweetCrawler.py https://twitter.com/Twitter/status/1278347468690915330</code> 下载<a target="_blank" rel="noopener" href="https://twitter.com/Twitter/status/1278347468690915330">此链接</a>至 temp 文件夹</p>
+<h2 id="相关问题"><a href="#相关问题" class="headerlink" title="相关问题"></a>相关问题</h2><p>1.为什么不用原版的 <a target="_blank" rel="noopener" href="https://github.com/lightbody/browsermob-proxy">browsermob-proxy</a>，而使用它的Fork版 <a target="_blank" rel="noopener" href="https://github.com/browserup/browserup-proxy">browserup-proxy</a> ？</p>
+<p>browsermob-proxy 已经停止维护，其中一个 <a target="_blank" rel="noopener" href="https://github.com/lightbody/browsermob-proxy/pull/731">Bug</a> 导致该脚本无法正常抓取网页内容</p>
+<h2 id="性能优化及功能改进"><a href="#性能优化及功能改进" class="headerlink" title="性能优化及功能改进"></a>性能优化及功能改进</h2><ul>
+<li>instagram 1440px 图片下载 (未支持)</li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2023 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            eMule 探索 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>eMule 探索</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2020/07/10</span>
+            </div>
+            
+            <div class="post-content">
+                <p>2020年了，我竟然重新对 emule 产生了兴趣<br>记录几个使用过程中遇到的问题</p>
+<h2 id="连接问题"><a href="#连接问题" class="headerlink" title="连接问题"></a>连接问题</h2><p>1.服务器连接</p>
+<p>“从 URL 更新 server.met” 输入以下任一网址，点击“更新”</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://upd.emule-security.org/server.met">http://upd.emule-security.org/server.met</a></li>
+<li><a target="_blank" rel="noopener" href="http://gruk.org/server.met.gz">http://gruk.org/server.met.gz</a></li>
+</ul>
+<p>2.Kad 连接</p>
+<p>“从以下网址获取节点信息” 输入以下网址，点击“引导程序”</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://upd.emule-security.org/nodes.dat">http://upd.emule-security.org/nodes.dat</a><br>或者手动下载上面的文件，放到相应目录</li>
+</ul>
+<h2 id="LowID-问题"><a href="#LowID-问题" class="headerlink" title="LowID 问题"></a>LowID 问题</h2><p>解决这个问题有两个关键</p>
+<p>1.确保自己的 IP 是公网 IP</p>
+<p>确认方法：通过提供当前 IP 查询的网站确认自己连接到公网时的 IP，然后查询自己上网猫中网络侧信中息的 IP 地址，如果两个 IP 一致，说明有公网 IP<br>经过确认，发现自己是公网 IP，很幸运，可以进行下一步了</p>
+<p>2.为 emule 端口设置端口映射</p>
+<ul>
+<li>emule -&gt; 选项 -&gt; 连接，确认客户端口栏 TCP 和 UDP 的端口号，点测试端口，弹出的网页如果显示 test failed，说明需要端口映射</li>
+<li>先在自己的路由器上设置端口映射（或者叫虚拟服务器），外部端口和内部端口都写成刚才 emule 客户端查到的端口号，IP 地址写成运行 emule 电脑的局域网 IP。需要设置两条，分别对应 TCP 和 UDP 协议类型。其中 TCP 端口供 ed2K 服务器使用，UDP端口供 Kad 网络使用</li>
+<li>现在一般的上网猫会自带路由功能，所以在上网猫中也要按照上面的方法设置端口映射。这个操作需要管理员权限，通过上网猫型号网络搜索，一般可以查到管理员登录密码</li>
+<li>进入 emule，再次点测试端口，此时测试网页应该已经能显示 TCP&#x2F;DUP test successful 了。重启 emule，得到 HighID</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://blog.leanote.com/post/qyj229/emule-kad%E8%BF%9E%E6%8E%A5%E4%B8%8D%E4%B8%8A%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F">emule kad连接不上怎么办？</a></li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2023 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>

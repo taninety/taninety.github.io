@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            Ameblo 下载 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>Ameblo 下载</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2020/08/24</span>
+            </div>
+            
+            <div class="post-content">
+                <h2 id="备选方案"><a href="#备选方案" class="headerlink" title="备选方案"></a>备选方案</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://souenough.jp/software/ameback/index.html">AmeBack</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.amebloget.com/index.html">AmebloGET</a></li>
+<li><a target="_blank" rel="noopener" href="https://ameblo.jp/drunken/">blogtool</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.gnu.org/software/wget/">wget</a></li>
+</ul>
+<h2 id="方案分析"><a href="#方案分析" class="headerlink" title="方案分析"></a>方案分析</h2><h4 id="AmeBack"><a href="#AmeBack" class="headerlink" title="AmeBack"></a>AmeBack</h4><p>个人认为很完美的选择。付费版本为2980日元，但是购买方式比较麻烦。因为下载博客的需求对我来说并不频繁，所以没有选择。<br>免费版本可以下载这个博客的完整文章列表，作为wget方案的补充。</p>
+<h4 id="AmebloGET"><a href="#AmebloGET" class="headerlink" title="AmebloGET"></a>AmebloGET</h4><p>价格较贵，并且购买方式也麻烦。优点是可以下载评论。</p>
+<h4 id="blogtool"><a href="#blogtool" class="headerlink" title="blogtool"></a>blogtool</h4><p>最后一次更新时间是 2015-03-26，且官方下载网站下线了。2020年测试时发现已经无法成功下载Ameblo，所以排除。</p>
+<h4 id="wget"><a href="#wget" class="headerlink" title="wget"></a>wget</h4><p>通用工具，自由度高，可以自己定制命令，但是下载得到的结果不够简洁。</p>
+<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p>1.使用 AmeBack 免费版本获得想要下载博客的链接列表</p>
+<p>2.使用文本处理工具(比如Notepad++)处理列表，使其符合wget要求的链接列表格式</p>
+<p>3.执行wget命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --recursive --page-requisites --html-extension --convert-links --restrict-file-names=windows --span-hosts --domains=ameblo.jp,stat.ameba.jp,stat001.ameba.jp,stat002.ameba.jp,stat100.ameba.jp,stat.blogskin.ameba.jp --no-parent --level=1 --<span class="built_in">wait</span>=1 -i list.txt</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参数分析<br>–recursive –level&#x3D;1 迭代一层，在此例中可以确保可以下载到图片的源文件<br>–page-requisites 下载依赖的资源文件，需要与–span-hosts –domains&#x3D;xxx 配合<br>–span-hosts –domains&#x3D;xxx 下载非本站域名<br>–convert-links 转换链接到本地链接，确保可以离线浏览<br>–no-parent 避免下载到父级目录<br>–wait&#x3D;1 每次下载前等待1s，防止因为过于频繁的请求服务器被屏蔽<br>-i list.txt 需要下载的链接列表，每行一个链接<br>–html-extension 网页文件后缀为html，在此例中无必要<br>–restrict-file-names&#x3D;windows 将文件名中的字符限制为windows允许的字符，此例中无必要</p>
+</blockquote>
+<blockquote>
+<p>当前方案缺陷</p>
+<ul>
+<li>下载得到的文章没有日期，但是Ameback获得的列表里有日期，可以作为弥补</li>
+<li>得到的文件比较零散，包含一些无用的重复</li>
+</ul>
+</blockquote>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://wordpress-custom.jp/ameblo-packup/ameblo-backup-2.html">アメブロ記事のバックアップツール比較</a></li>
+<li><a target="_blank" rel="noopener" href="https://11-30am.com/42/">コマンドでアメーバブログのバックアップをする</a></li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2023 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>
