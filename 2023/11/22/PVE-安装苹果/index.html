@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            PVE 安装苹果 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>PVE 安装苹果</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2023/11/22</span>
+            </div>
+            
+            <div class="post-content">
+                <p>注：仅供个人复用，步骤暂时不全，慢慢完善</p>
+<h2 id="安装PVE系统"><a href="#安装PVE系统" class="headerlink" title="安装PVE系统"></a>安装PVE系统</h2><p>下载<a target="_blank" rel="noopener" href="https://www.proxmox.com/en/downloads">PVE镜像文件</a>，如<code>proxmox-ve_8.0-2.iso</code></p>
+<p>写入U盘，或者使用ventoy制作多系统启动U盘</p>
+<p>电脑安装PVE系统，和安装其他操作系统一样流程</p>
+<h2 id="创建ubuntu虚拟机"><a href="#创建ubuntu虚拟机" class="headerlink" title="创建ubuntu虚拟机"></a>创建ubuntu虚拟机</h2><p>启动PVE系统后不用登录，确认控制台上显示的IP地址，如<code>https://192.168.0.1:8006</code></p>
+<p>同一局域网内的另一台电脑，网页浏览器登录PVE</p>
+<p>pve控制面板，通过CT模板创建Ubuntu虚拟机</p>
+<h2 id="获取苹果恢复镜像"><a href="#获取苹果恢复镜像" class="headerlink" title="获取苹果恢复镜像"></a>获取苹果恢复镜像</h2><p>Ubuntu控制台，获取mac恢复镜像</p>
+<pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/thenickdude/OSM-KVM.git
+<span class="hljs-built_in">cd</span> /root/OSX-KVM/scripts/monterey
+make Monterey-recovery.img</code></pre>
+
+<p>pve控制台，拉取mac恢复镜像</p>
+<pre><code class="hljs bash">pct pull 100 /root/OSX-KVM/scripts/monterey/Monterey-recovery.img /var/lib/vz/template/iso/Monterey-recovery.img</code></pre>
+
+<h2 id="获取Opencore镜像"><a href="#获取Opencore镜像" class="headerlink" title="获取Opencore镜像"></a>获取Opencore镜像</h2><p>pve控制台，获取Opencore镜像</p>
+<pre><code class="hljs plaintext">cd /var/lib/vz/template/iso/
+wget https://github.com/thenickdude/KVM-Opencore/releases/download/v20/OpenCore-v20.iso.gz
+gzip -d OpenCore-v20.iso.gz</code></pre>
+
+<h2 id="创建mac虚拟机"><a href="#创建mac虚拟机" class="headerlink" title="创建mac虚拟机"></a>创建mac虚拟机</h2><p>pve控制面板，创建mac虚拟机，配置如下</p>
+<pre><code class="hljs plaintext">操作系统：ISO镜像 选择Opencore，类别 选择Other
+系统：显卡 VMWare兼容，机型 q35，BIOS OVMF(UEFI)，EFI Storage local-lvm，Pre-Enroll keys 取消选中，Qemu代理 选中
+磁盘：VirtIO Block，缓存 Write back(不安全) //如果卡在12分钟的位置，需要改成默认(无缓存)
+CPU：类别 Penryn，启用NUMA 选中
+网络：模型 VirtIO(半虚拟化)</code></pre>
+
+<p>硬件，添加Monterey-recovery.img镜像</p>
+<p>pve控制台，编辑mac虚拟机配置</p>
+<pre><code class="hljs bash">nano /etc/pve/qemu-server/101.conf</code></pre>
+
+<p>添加参数</p>
+<pre><code class="hljs plaintext">args: -device isa-applesmc,osk=&quot;网上找&quot; -smbios type=2 -device usb-kbd,bus=ehci.0,port=2 -global nec-usb-xhci.msi=off -global ICH9-LPC.acpi-pci-hotplug-with-bridge-support=off</code></pre>
+
+<p>修改硬盘镜像参数</p>
+<pre><code class="hljs plaintext">ide0: local:iso/Monterey-recovery.img,cache=unsafe,size=14G
+ide2: local:iso/OpenCore-v20.img,cache=unsafe</code></pre>
+
+<h2 id="安装mac系统"><a href="#安装mac系统" class="headerlink" title="安装mac系统"></a>安装mac系统</h2><p>启动mac虚拟机，格式化硬盘</p>
+<p>选择恢复系统，等待并且重启多次后完成</p>
+<h2 id="制作pve模板"><a href="#制作pve模板" class="headerlink" title="制作pve模板"></a>制作pve模板</h2><p>拷贝OpenCore引导到系统盘</p>
+<pre><code class="hljs bash">diskutil list
+sudo <span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/disk2s1 of=/dev/disk0s1</code></pre>
+
+<p>分离OpenCore镜像和Monterey镜像</p>
+<p>转化为模板</p>
+<h2 id="一些方便配置"><a href="#一些方便配置" class="headerlink" title="一些方便配置"></a>一些方便配置</h2><p><strong>跳过引导选择页面</strong></p>
+<p>使用ProperTree编辑OpenCore config.plist文件</p>
+<pre><code class="hljs plaintext">ShowPicker设置为False</code></pre>
+
+<p><strong>pve控制台自动熄屏</strong></p>
+<p>不能在网页控制台操作，需要直接操作电脑</p>
+<pre><code class="hljs bash">setterm --blank 1</code></pre>
+
+<p><strong>笔记本电脑合盖时禁止睡眠</strong></p>
+<p>修改配置<code>/etc/systemd/logind.conf</code></p>
+<pre><code class="hljs plaintext">HandleLidSwitch=ignore</code></pre>
+
+<p>重启服务</p>
+<pre><code class="hljs bash">service systemd-logind restart</code></pre>
+
+<h2 id="问题处理"><a href="#问题处理" class="headerlink" title="问题处理"></a>问题处理</h2><p>如果卡在12分钟的位置，磁盘缓存需要修改成默认(无缓存)</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=X6kaDbZOm9Q">【司波图】黑苹果不再复杂？PVE虚拟环境安装macOS通用教程_01</a><br><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=S0V9jPUB4JM">【司波图】PVE虚拟环境macOS系统基本应用以及优化（虚拟机装黑果果02）</a><br><a target="_blank" rel="noopener" href="https://www.nicksherlock.com/2021/10/installing-macos-12-monterey-on-proxmox-7/">Installing macOS 12 “Monterey” on Proxmox 7</a><br><a target="_blank" rel="noopener" href="https://stdrc.cc/post/2018/11/07/turn-off-screen-on-linux-server/">在笔记本上使用 Proxmox（或其它 Linux 服务器版）时关闭屏幕</a><br><a target="_blank" rel="noopener" href="https://imacos.top/2023/07/29/pve-macos/">PVE环境安装macOS苹果系统通用入门级教程(在 Proxmox 8 上安装Install macOS Sonoma 14)</a></p>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2023 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>

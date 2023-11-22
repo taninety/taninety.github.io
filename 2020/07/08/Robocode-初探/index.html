@@ -112,7 +112,30 @@
 <li>getVelocity()</li>
 </ul>
 <h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p>(完善中..)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> taninety;</span><br><span class="line"><span class="keyword">import</span> robocode.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Myself1</span> <span class="keyword">extends</span> <span class="title class_">Robot</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">			turnGunRight(<span class="number">360</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onScannedRobot</span><span class="params">(ScannedRobotEvent e)</span> &#123;</span><br><span class="line">		fire(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onHitByBullet</span><span class="params">(HitByBulletEvent e)</span> &#123;</span><br><span class="line">		back(<span class="number">10</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onHitWall</span><span class="params">(HitWallEvent e)</span> &#123;</span><br><span class="line">		back(<span class="number">20</span>);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs java"><span class="hljs-keyword">package</span> taninety;
+<span class="hljs-keyword">import</span> robocode.*;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Myself1</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Robot</span>
+&#123;
+
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;
+		<span class="hljs-keyword">while</span>(<span class="hljs-literal">true</span>) &#123;
+			turnGunRight(<span class="hljs-number">360</span>);
+		&#125;
+	&#125;
+
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onScannedRobot</span><span class="hljs-params">(ScannedRobotEvent e)</span> &#123;
+		fire(<span class="hljs-number">1</span>);
+	&#125;
+
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onHitByBullet</span><span class="hljs-params">(HitByBulletEvent e)</span> &#123;
+		back(<span class="hljs-number">10</span>);
+	&#125;
+	
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onHitWall</span><span class="hljs-params">(HitWallEvent e)</span> &#123;
+		back(<span class="hljs-number">20</span>);
+	&#125;	
+&#125;</code></pre>
 
 
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>

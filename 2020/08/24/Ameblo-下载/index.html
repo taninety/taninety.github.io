@@ -81,7 +81,7 @@
 <h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p>1.使用 AmeBack 免费版本获得想要下载博客的链接列表</p>
 <p>2.使用文本处理工具(比如Notepad++)处理列表，使其符合wget要求的链接列表格式</p>
 <p>3.执行wget命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --recursive --page-requisites --html-extension --convert-links --restrict-file-names=windows --span-hosts --domains=ameblo.jp,stat.ameba.jp,stat001.ameba.jp,stat002.ameba.jp,stat100.ameba.jp,stat.blogskin.ameba.jp --no-parent --level=1 --<span class="built_in">wait</span>=1 -i list.txt</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs bash">wget --recursive --page-requisites --html-extension --convert-links --restrict-file-names=windows --span-hosts --domains=ameblo.jp,stat.ameba.jp,stat001.ameba.jp,stat002.ameba.jp,stat100.ameba.jp,stat.blogskin.ameba.jp --no-parent --level=1 --<span class="hljs-built_in">wait</span>=1 -i list.txt</code></pre>
 <blockquote>
 <p>参数分析<br>–recursive –level&#x3D;1 迭代一层，在此例中可以确保可以下载到图片的源文件<br>–page-requisites 下载依赖的资源文件，需要与–span-hosts –domains&#x3D;xxx 配合<br>–span-hosts –domains&#x3D;xxx 下载非本站域名<br>–convert-links 转换链接到本地链接，确保可以离线浏览<br>–no-parent 避免下载到父级目录<br>–wait&#x3D;1 每次下载前等待1s，防止因为过于频繁的请求服务器被屏蔽<br>-i list.txt 需要下载的链接列表，每行一个链接<br>–html-extension 网页文件后缀为html，在此例中无必要<br>–restrict-file-names&#x3D;windows 将文件名中的字符限制为windows允许的字符，此例中无必要</p>
 </blockquote>

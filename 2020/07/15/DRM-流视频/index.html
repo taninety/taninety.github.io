@@ -118,10 +118,18 @@
 </ul>
 <h3 id="修改-Chromium"><a href="#修改-Chromium" class="headerlink" title="修改 Chromium"></a>修改 Chromium</h3><p>根据 <a target="_blank" rel="noopener" href="https://www.52pojie.cn/thread-1162942-1-1.html">HTML5视频解密的方法（widevine的破解思路）</a> 的步骤来修改代码</p>
 <p>基本步骤:<br>修改 <code>src\media\mojo\clients\mojo_decryptor.cc</code> 文件</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;third_party/libyuv/include/libyuv.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;ui/gfx/codec/png_codec.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">....</span><br><span class="line"><span class="type">void</span> MojoDecryptor::OnVideoDecoded</span><br><span class="line">....</span><br><span class="line">加入文章中提到的代码</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;third_party/libyuv/include/libyuv.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ui/gfx/codec/png_codec.h&quot;</span></span>
+
+....
+<span class="hljs-type">void</span> MojoDecryptor::OnVideoDecoded
+....
+加入文章中提到的代码
+....</code></pre>
 
 <p>修改 <code>src\media\mojo\clients\BUILD.gn</code> 文件<br>在 sources 中包含 mojo_decryptor.cc 的方法中，为deps数组添加元素</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;//third_party/libyuv&quot;,</span><br><span class="line">&quot;//ui/gfx&quot;,</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs plaintext">&quot;//third_party/libyuv&quot;,
+&quot;//ui/gfx&quot;,</code></pre>
 
 <p>重新编译<br>autoninja -C out\Default chrome</p>
 <h3 id="获取-png-文件"><a href="#获取-png-文件" class="headerlink" title="获取 png 文件"></a>获取 png 文件</h3><p>从log中提取hex文本，保存到文本文件 pic.hex<br>利用 xxd 命令 <code>xxd -plain -revert pic.hex pic.png</code><br>其中 xxd 命令 linux bash 自带，windows下可以通过安装vim获得</p>
