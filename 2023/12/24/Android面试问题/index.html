@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            Android面试问题 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>Android面试问题</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2023/12/24</span>
+            </div>
+            
+            <div class="post-content">
+                <p>代码版本 API33 &#x2F; Android 13</p>
+<h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><h2 id="使用流程"><a href="#使用流程" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-keyword">this</span>, NewActivity::<span class="hljs-keyword">class</span>.java)
+intent.putExtra(<span class="hljs-string">&quot;key&quot;</span>, value)
+startActivity(intent)</code></pre>
+
+<h2 id="运行流程"><a href="#运行流程" class="headerlink" title="运行流程"></a>运行流程</h2><ol>
+<li>发起startActivity请求</li>
+<li>调用Activity类 startActivityForResult</li>
+<li>调用Instrumentation类 execStartActivity</li>
+<li>调用ActivityTaskManager代理类 startActivity</li>
+<li>通过Binder进程间通信调用ActivityTaskManagerService类 startActivity</li>
+<li>调用ActivityTaskManagerService类 startActivityAsUser</li>
+<li>调用ActivityStarter类 execute, executeRequest, startActivityUnchecked, startActivtyInner</li>
+<li>调用RootWindowContainer类 resumeFocusedTasksTopActivities</li>
+<li>调用Task类 resumeTopActivityUncheckedLocked, resumeTopActivityInnerLocked</li>
+<li>调用TaskFragment类 resumeTopActivity</li>
+<li>调用ActivityTaskSupervisor类 startSpecificActivity<ul>
+<li>如果进程存在，调用ActivityTaskSupervisor类 realStartActivityLocked</li>
+</ul>
+</li>
+<li>如果进程不存在，调用ActivityTaskManagerService类 startProcessAsync</li>
+<li>通过Handler发送消息(?)调用ActivityManagerService类 startProcess, startProcessLocked</li>
+<li>调用ProcessList类 startProcessLocked, startProcess</li>
+<li>调用Process类 start</li>
+<li>调用ZygoteProcess类 start, startViaZygote, openZygoteSocketIfNeeded, attemptConnectionToPrimaryZygote, 调用ZygoteState内部静态类connect</li>
+<li>调用LocalSocket类 connect</li>
+<li>通过Socket进程间通信连接ZygoteServer类 runSelectLoop的阻塞</li>
+<li>调用ZygoteConnection类 processCommand</li>
+<li>调用Zygote类 forkAndSpecialize, nativeForkAndSpecialize</li>
+<li>成功后回调ZygoteConnection类 handleChildProc</li>
+<li>调用ZygoteInit类 zygoteInit</li>
+<li>调用RuntimeInit类 applicationInit, findStaticMain, 调用内部静态类MethodAndArgsCaller run</li>
+<li>通过反射调用ActivityThread类 main, attach, </li>
+<li>通过Binder进程间通信调用ActivityManagerService类 attachApplication, attchApplicationLocked</li>
+<li>调用ActivityTaskManagerService类 attachApplication</li>
+<li>调用RootWindowContainer类 attachApplication，调用AttachApplicationHelper内部类的process, test</li>
+<li>调用ActivityTaskSupervisor类 realStartActivityLocked</li>
+<li>调用ClientLifecycleManager类 scheduleTransaction</li>
+<li>调用ClientTransaction类 schedule</li>
+<li>通过Binder进程间通信调用ActivityThread类 scheduleTransaction，调用ClientTransactionHandler父类 scheduleTransaction, sendMessage</li>
+<li>通过Handler调用ActivityThread类 handleMessage，处理消息EXECUTE_TRANSACTION</li>
+<li>调用TransactionExecutor类 execute, executeCallbacks</li>
+<li>调用LaunchActivityItem类 execute</li>
+<li>调用ClientTransactionHandler的子类ActivityThread类 handleLaunchActivity, performLaunchAcitivty</li>
+<li>调用Instrumentation类 callActivityOnCreate</li>
+<li>调用Activity类 performCreate, onCreate</li>
+</ol>
+<p>简化流程</p>
+<ul>
+<li>Activity startActivity &gt;(<strong>Binder</strong>)&gt; ATMS startActivity &gt; AMS startProcess &gt; ZygoteProcess openZygoteSocketIfNeeded &gt;(<strong>Socket触发阻塞</strong>)&gt; ZygoteServer runSelectLoop &gt; Zygote nativeForkAndSpecialize &gt;(<strong>native&amp;callback</strong>)&gt; RuntimeInit findStaticMain &gt;(<strong>反射</strong>)&gt; ActivityThread main &gt;(<strong>Binder</strong>)&gt; AMS attachApplication &gt; ATMS attachApplication &gt; ActivityTaskSupervisor realStartActivityLocked &gt; ClientLifecycleManager scheduleTransaction &gt;(<strong>Binder</strong>)&gt; ActivityThread scheduleTransaction &gt;(<strong>Handler</strong>)&gt; ActivityThread handleMessage &gt; LaunchActivityItem execute &gt; ActivityThread handleLaunchActivity &gt; Activity onCreate</li>
+</ul>
+<p>更简言之</p>
+<ul>
+<li>app进程通过Binder调用system_server进程ATMS startActivity</li>
+<li>ATMS判断是否需要开启新app进程<ul>
+<li>如果需要新app进程</li>
+<li>转交AMS，AMS通过Socket连接zygote进程</li>
+<li>阻塞中的zygote进程收到消息后</li>
+<li>通过native fork新app进程</li>
+<li>成功后，通过反射调用ActivityThread main方法，调用attach方法</li>
+<li>通过Binder调用system_server进程AMS attachApplication</li>
+<li>转交ATMS</li>
+</ul>
+</li>
+<li>ATMS调用realStartActivityLocked</li>
+<li>通过Binder调用app进程scheduleTransaction</li>
+<li>通过Handler调用handleLaunchActivity</li>
+<li>最终调用Activity onCreate</li>
+</ul>
+<h2 id="子概念"><a href="#子概念" class="headerlink" title="子概念"></a>子概念</h2><p><strong>生命周期</strong></p>
+<ul>
+<li>onCreate: 创建时调用<ul>
+<li><code>setContentView()</code></li>
+</ul>
+</li>
+<li>onStart：可见</li>
+<li>onResume: 可交互<ul>
+<li>适合打开独占设备，比如开启相机预览</li>
+</ul>
+</li>
+<li>onPause: 不可交互</li>
+<li>onStop: 不可见</li>
+<li>onDestory: 销毁时调用<ul>
+<li>处理内存泄露</li>
+</ul>
+</li>
+<li>onRestart: <ul>
+<li>onStart前如果不需要调用onCreate，就会调用onRestart</li>
+</ul>
+</li>
+<li>onSaveInstanceState:<ul>
+<li>当Activity进入允许被系统<strong>未经许可</strong>销毁状态时，会调用。比如熄屏&#x2F;横竖屏切换&#x2F;HOME键&#x2F;RECENT键&#x2F;启动新界面</li>
+<li>用户主动销毁Activity时不会调用。比如BACK键</li>
+</ul>
+</li>
+<li>onRestoreInstanceState<ul>
+<li>当Activity确实被系统<strong>未经许可</strong>销毁了，恢复时会调用 onCreate &gt; onStart &gt; onRestoreInstanceState &gt; onResume</li>
+<li>onCreate中也可以得到savedInstanceState数据，onRestoreInstanceState存在的意义是允许在onStart之后恢复数据</li>
+</ul>
+</li>
+</ul>
+<p>完整顺序 </p>
+<ul>
+<li>onCreate &gt; onRestart &gt; onStart &gt; onRestoreInstanceState &gt; onResume &gt; onPause &gt; onStop &gt; onSaveInstanceState &gt; onDestory</li>
+</ul>
+<p>流程举例</p>
+<ul>
+<li>启动: onCreate &gt; onStart &gt; onResume</li>
+<li>BACK键: onPause &gt; onStop &gt; onDestory<ul>
+<li>回到应用: onCreate &gt; onStart &gt; onPause</li>
+</ul>
+</li>
+<li>HOME键&#x2F;RECENT键&#x2F;熄屏: onPause &gt; onStop &gt; onSaveInstanceState<ul>
+<li>回到应用&#x2F;亮屏: onRestart &gt; onStart &gt; onResume</li>
+<li>回到应用(Activity因内存不足被回收): onCreate &gt; onRestoreInstanceState &gt; onStart &gt; onResume</li>
+</ul>
+</li>
+<li>启动新界面: 当前Activity onPause &gt; 目标Activity onCreate, onStart, onPause &gt; 当前Activity onStop, onSaveInstanceState<ul>
+<li>返回旧界面: 当前Activity onPause &gt; 返回Activity onRestart, onStart, onResume &gt; 当前Activity onStop, onDestroy</li>
+<li>返回旧界面(Activity因内存不足被回收): 当前Activity onPause &gt; 返回Activity onCreate, onStart, onRestoreInstance, onResume &gt; 当前Activity onStop, onDestroy</li>
+</ul>
+</li>
+<li>启动透明界面: onPause<br>  -回到旧界面: onResume</li>
+</ul>
+<p>总结</p>
+<ul>
+<li>开启新Activity，先调用当前Activity onPause，然后调用目标Activity的完整启动流程，再调用当前Activity onStop</li>
+<li>返回到旧Activity，先调用当前Activity onPause, 然后调用返回Activity的onRestart,onStart,onResume，在调用当前Activity剩余退出流程</li>
+<li>本质上就是在当前Activity的onPause和onStop之间插入目前Activity的正常流程</li>
+</ul>
+<p><strong>启动模式</strong></p>
+<ul>
+<li>标准 Standard</li>
+<li>栈顶复用 SingleTop：复用栈顶相同Activity，不会新建Activity</li>
+<li>栈内复用 SingleTask：复用栈内相同Activity，不会新建Activity</li>
+<li>单例 SingleInstance</li>
+</ul>
+<p><strong>Intent flags</strong></p>
+<p>注：暂未经实践，坑比较多</p>
+<ul>
+<li>FLAG_ACTIVITY_SINGLE_TOP：和SingleTop行为相同</li>
+<li>FLAG_ACTIVITY_NEW_TASK：很少单独使用，单独使用无效果(?)</li>
+<li>FLAG_ACTIVITY_CLEAR_TOP：设置不同taskAffinity时，与FLAG_ACTIVITY_NEW_TASK同时使用，和SingleTask行为相同(?)</li>
+<li>FLAG_ACTIVITY_CLEAR_TASK：设置不同taskAffinity时，与FLAG_ACTIVITY_NEW_TASK同时使用，会有效果(?)</li>
+</ul>
+<p>参考链接: <a target="_blank" rel="noopener" href="https://wangkuiwu.github.io/2014/06/26/IntentFlag/">https://wangkuiwu.github.io/2014/06/26/IntentFlag/</a></p>
+<h1 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h1><h2 id="使用流程-1"><a href="#使用流程-1" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> transaction = supportFramentManager.beginTransaction()
+transaction.add(R.id.container, NewFragment(), <span class="hljs-string">&quot;tag&quot;</span>)
+transaction.addToBackStack(<span class="hljs-string">&quot;add&quot;</span>)
+transaction.commit()</code></pre>
+
+<h2 id="运行流程-1"><a href="#运行流程-1" class="headerlink" title="运行流程"></a>运行流程</h2><h2 id="子概念-1"><a href="#子概念-1" class="headerlink" title="子概念"></a>子概念</h2><p><strong>生命周期</strong></p>
+<ul>
+<li>onAttach</li>
+<li>onCreate</li>
+<li>onCreateView: 返回Fragment rootView</li>
+<li>onViewCreated</li>
+<li>onStart</li>
+<li>onResume</li>
+<li>onPause</li>
+<li>onStop</li>
+<li>onDestroyView</li>
+<li>onDestroy</li>
+<li>onDetach</li>
+</ul>
+<p>完整顺序</p>
+<ul>
+<li>onAttach &gt; onCreate &gt; onCreateView &gt; onViewCreated &gt; onStart &gt; onResume &gt; onPause &gt; onStop &gt; onDestroyView &gt; onDestroy &gt; onDetach</li>
+</ul>
+<p>流程举例</p>
+<ul>
+<li>Activity启动，静态Fragment加载：Activity onCreate &gt; Fragment onAttach, onCreate, onCreateView, onViewCreateed &gt; Activity onStart &gt; Fragment onStart &gt; Activity onResume &gt; Fragment onResume</li>
+<li>Activity返回: Activity onPause &gt; Fragment onPause &gt; Activity onStop &gt; Fragment onStop &gt; Activity onDestroy &gt; Fragment onDestoryView, onDestroy, onDetach</li>
+<li>启动新Activity: 当前Activity onPause &gt; 当前Fragment onPause &gt; 目标Activity onCreate … 目标Fragment onResume &gt; 当前Activity onStop &gt; 当前Fragment onStop</li>
+<li>返回旧Activity: 当前Activity onPause &gt; 当前Fragment onPause &gt; 返回Acitivty onRestart &gt; 返回Activity onStart … 返回Fragment onResume &gt; 当前Activity onStop … 当前Fragment onDetach</li>
+</ul>
+<p>总结</p>
+<ul>
+<li>Fragment每个生命周期都是被Activity生命周期带动的</li>
+</ul>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.piasy.com/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle/index.html">https://blog.piasy.com/2017/01/14/Android-Basics-Activity-Fragment-Life-Cycle/index.html</a></p>
+<h1 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h1><h2 id="使用流程：即启动方式"><a href="#使用流程：即启动方式" class="headerlink" title="使用流程：即启动方式"></a>使用流程：即启动方式</h2><p><strong>启动服务</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> intent1 = Intent(<span class="hljs-keyword">this</span>, NewService::<span class="hljs-keyword">class</span>.java)
+startService(intent)
+
+<span class="hljs-comment">//停止服务</span>
+<span class="hljs-keyword">val</span> intent2 = Intent(<span class="hljs-keyword">this</span>, NewService::<span class="hljs-keyword">class</span>.java)
+stopService(intent)</code></pre>
+<ul>
+<li>启动和停止可以使用不同的Intent对象，服务在系统中只有一个实例</li>
+<li>销毁Activity不会影响Service</li>
+</ul>
+<p><strong>绑定服务</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> connection = <span class="hljs-keyword">object</span> : ServiceConnection &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onServiceConnected</span><span class="hljs-params">(name: <span class="hljs-type">ComponentName</span>, service: <span class="hljs-type">IBinder</span>)</span></span> &#123;&#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onServiceDisconnected</span><span class="hljs-params">(name: <span class="hljs-type">ComponentName</span>)</span></span> &#123;&#125;
+&#125;
+
+<span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-keyword">this</span>, NewService::<span class="hljs-keyword">class</span>.java)
+bindService(intent, connection, Service.BIND_AUTO_CREATE)
+
+<span class="hljs-comment">//解绑服务</span>
+unbindService(connection)</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-keyword">class</span> <span class="hljs-title class_">NewService</span> : <span class="hljs-type">Service</span>() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onBind</span><span class="hljs-params">(intent: <span class="hljs-type">Intent</span>)</span></span>: IBinder &#123;
+        <span class="hljs-keyword">return</span> binder
+    &#125;
+
+    <span class="hljs-keyword">inner</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyBinder</span> : <span class="hljs-type">Binder</span>() &#123;
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getService</span><span class="hljs-params">()</span></span> = <span class="hljs-keyword">this</span><span class="hljs-symbol">@NewService</span>
+    &#125;
+
+    <span class="hljs-keyword">var</span> binder = MyBinder()
+&#125;</code></pre>
+
+<ul>
+<li>绑定和解绑服务要使用同一个ServiceConnection对象</li>
+<li>销毁Activity，Service也会被销毁</li>
+</ul>
+<h2 id="运行流程-2"><a href="#运行流程-2" class="headerlink" title="运行流程"></a>运行流程</h2><h2 id="子概念-2"><a href="#子概念-2" class="headerlink" title="子概念"></a>子概念</h2><p><strong>生命周期</strong></p>
+<ul>
+<li>onCreate</li>
+<li>onStartCommand</li>
+<li>onDestroy</li>
+<li>onBind</li>
+<li>onUnbind</li>
+</ul>
+<p>流程举例</p>
+<ul>
+<li>首次启动服务: onCreate &gt; onStartCommand</li>
+<li>重复启动服务: onStartCommand</li>
+<li>停止服务: onDestroy</li>
+<li>首次绑定服务: onCreate &gt; onBind &gt; onServiceConnected</li>
+<li>重复绑定服务: 无回调</li>
+<li>解绑服务: onUnBind &gt; onDestroy</li>
+<li>绑定的服务意外中断: onServiceDisconnected</li>
+</ul>
+<h1 id="Broadcast-Receiver"><a href="#Broadcast-Receiver" class="headerlink" title="Broadcast Receiver"></a>Broadcast Receiver</h1><h2 id="使用流程-2"><a href="#使用流程-2" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-comment">//MyReceiver.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MyReceiver</span> : <span class="hljs-type">BroadcastReceiver</span>() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onReceive</span><span class="hljs-params">(context: <span class="hljs-type">Context</span>, intent: <span class="hljs-type">Intent</span>)</span></span> &#123;&#125;
+&#125;</code></pre>
+
+<p><strong>静态广播</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-string">&quot;static_broadcast&quot;</span>)
+sendBroadcast(intent)</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//AndroidManifest.xml</span>
+&lt;receiver
+    android:name=<span class="hljs-string">&quot;.broadcast.MyReceiver&quot;</span>
+    android:exported=<span class="hljs-string">&quot;false&quot;</span>&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name=<span class="hljs-string">&quot;static_broadcast&quot;</span> /&gt;
+    &lt;/intent-filter&gt;
+&lt;/receiver&gt;</code></pre>
+
+<p><strong>动态广播</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> dynamicReceiver = MyReceiver() <span class="hljs-comment">//和静态BroadcastReciver实现一样</span>
+
+<span class="hljs-keyword">val</span> filter = IntentFilter(<span class="hljs-string">&quot;dynamic_broadcast&quot;</span>)
+registerReceiver(dynamicReceiver, filter)
+
+<span class="hljs-comment">//解绑时要传入相同BroadcastReceiver对象</span>
+unregisterReceiver(dynamicReceiver)
+
+<span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-string">&quot;dynamic_broadcast&quot;</span>)
+sendBroadcast(intent)</code></pre>
+
+<p><strong>本地广播</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> localReceiver = MyReceiver() <span class="hljs-comment">//和静态BroadcastReciver实现一样</span>
+<span class="hljs-keyword">val</span> localBroadcastManager = LocalBroadcastManager.getInstance(<span class="hljs-keyword">this</span>)
+
+<span class="hljs-keyword">val</span> filter = IntentFilter(<span class="hljs-string">&quot;local_broadcast&quot;</span>)
+localBroadcastManager.registerReceiver(localReceiver, filter)
+
+localBroadcastManager.unregisterReceiver(localReceiver)
+
+<span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-string">&quot;local_broadcast&quot;</span>)
+localBroadcastManager.sendBroadcast(intent)</code></pre>
+
+<h2 id="运行流程-3"><a href="#运行流程-3" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Content-Provider"><a href="#Content-Provider" class="headerlink" title="Content Provider"></a>Content Provider</h1><h2 id="使用流程-3"><a href="#使用流程-3" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> authority = <span class="hljs-string">&quot;com.my.authority&quot;</span>  <span class="hljs-comment">//和AndroidManifest.xml authorities保持一致</span>
+<span class="hljs-keyword">val</span> path = <span class="hljs-string">&quot;path&quot;</span>
+<span class="hljs-keyword">val</span> contentUri = Uri.parse(<span class="hljs-string">&quot;content://<span class="hljs-variable">$authority</span>/<span class="hljs-variable">$path</span>&quot;</span>)
+
+<span class="hljs-comment">//增加</span>
+<span class="hljs-keyword">val</span> insertValues = ContentValues()
+insertValues.put(<span class="hljs-string">&quot;column_name&quot;</span>, <span class="hljs-string">&quot;value&quot;</span>)
+<span class="hljs-keyword">val</span> insertUri = contentResolver.insert(contentUri, insertValues)
+
+<span class="hljs-comment">//删除</span>
+<span class="hljs-keyword">val</span> contentUriWithId = ContentUris.withAppendedId(contentUri, id)
+contentResolver.delete(contentUriWithId, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>)
+
+<span class="hljs-comment">//修改</span>
+<span class="hljs-keyword">val</span> updateValues = ContentValues()
+updateValues.put(<span class="hljs-string">&quot;column_name&quot;</span>, <span class="hljs-string">&quot;value2&quot;</span>)
+contentResolver.update(contentUriWithId, updateValues, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>)
+
+<span class="hljs-comment">//查询</span>
+<span class="hljs-keyword">val</span> cursor = contentResolver.query(contentUri, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>)
+<span class="hljs-keyword">if</span> (cursor != <span class="hljs-literal">null</span> &amp;&amp; cursor.moveToFirst()) &#123;
+    <span class="hljs-keyword">do</span> &#123;
+        <span class="hljs-keyword">val</span> index = cursor.getColumn(<span class="hljs-string">&quot;column_name&quot;</span>)
+        <span class="hljs-keyword">val</span> value = cursor.getString(index)
+    &#125; <span class="hljs-keyword">while</span> (cursor.moveToNext())
+    cursor.close()
+&#125;</code></pre>
+
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--&gt;AndroidManifest.xml&lt;--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">provider</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.contentprovider.MyContentProvider&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:authorities</span>=<span class="hljs-string">&quot;com.my.authority&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:enabled</span>=<span class="hljs-string">&quot;true&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;true&quot;</span>/&gt;</span></code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//MuContentProvider.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MyContentProvider</span> : <span class="hljs-type">ContentProvider</span>() &#123;
+    <span class="hljs-keyword">val</span> DIR = <span class="hljs-number">1</span>
+    <span class="hljs-keyword">val</span> ITEM = <span class="hljs-number">2</span>
+
+    <span class="hljs-keyword">val</span> uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply &#123;
+        addURI(AUTHORITY, BASE_PATH, DIR)
+        addURI(AUTHORITY, <span class="hljs-string">&quot;<span class="hljs-variable">$BASE_PATH</span>/#&quot;</span>, ITEM)
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreate</span><span class="hljs-params">()</span></span>: <span class="hljs-built_in">Boolean</span> &#123;&#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getType</span><span class="hljs-params">(uri: <span class="hljs-type">Uri</span>)</span></span>: String &#123;&#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">query</span><span class="hljs-params">(</span></span>
+<span class="hljs-params"><span class="hljs-function">        uri: <span class="hljs-type">Uri</span>, projection: <span class="hljs-type">Array</span>&lt;<span class="hljs-type">String</span>&gt;?, selection: <span class="hljs-type">String</span>?,</span></span>
+<span class="hljs-params"><span class="hljs-function">        selectionArgs: <span class="hljs-type">Array</span>&lt;<span class="hljs-type">String</span>&gt;?, sortOrder: <span class="hljs-type">String</span>?</span></span>
+<span class="hljs-params"><span class="hljs-function">    )</span></span>: Cursor? &#123;
+        <span class="hljs-keyword">var</span> cursor: Cursor? = <span class="hljs-literal">null</span>
+        <span class="hljs-keyword">when</span> (uriMatcher.match(uri)) &#123;
+            DIR -&gt; &#123;
+                cursor = ... <span class="hljs-comment">//查询全部数据</span>
+            &#125;
+            ITEM -&gt; &#123;
+                <span class="hljs-keyword">val</span> id = ContentUris.parseId(uri)
+                cursor = ... <span class="hljs-comment">//查询单条数据</span>
+            &#125;
+            <span class="hljs-keyword">else</span> -&gt; <span class="hljs-keyword">throw</span> IllegalArgumentException(<span class="hljs-string">&quot;Unknown URI <span class="hljs-variable">$uri</span>&quot;</span>)
+        &#125;
+        <span class="hljs-keyword">return</span> cursor
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">insert</span><span class="hljs-params">(uri: <span class="hljs-type">Uri</span>, values: <span class="hljs-type">ContentValues</span>?)</span></span>: Uri? &#123;&#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">update</span><span class="hljs-params">(</span></span>
+<span class="hljs-params"><span class="hljs-function">        uri: <span class="hljs-type">Uri</span>, values: <span class="hljs-type">ContentValues</span>?, selection: <span class="hljs-type">String</span>?, selectionArgs: <span class="hljs-type">Array</span>&lt;<span class="hljs-type">String</span>&gt;?</span></span>
+<span class="hljs-params"><span class="hljs-function">    )</span></span>: <span class="hljs-built_in">Int</span> &#123;&#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">delete</span><span class="hljs-params">(uri: <span class="hljs-type">Uri</span>, selection: <span class="hljs-type">String</span>?, selectionArgs: <span class="hljs-type">Array</span>&lt;<span class="hljs-type">String</span>&gt;?)</span></span>: <span class="hljs-built_in">Int</span> &#123;&#125;
+&#125;</code></pre>
+
+<h2 id="运行流程-4"><a href="#运行流程-4" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h1><h2 id="使用流程-4"><a href="#使用流程-4" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> uiHandler = Handler(Looper.getMainLooper())
+
+<span class="hljs-comment">//方式一: post runnable</span>
+thread &#123;
+    <span class="hljs-comment">//子线程</span>
+    uiHandler.post(Runnable &#123;
+        <span class="hljs-comment">//主线程</span>
+    &#125;)
+&#125;
+
+<span class="hljs-keyword">val</span> uiMsgHandler = <span class="hljs-keyword">object</span> : Handler(Looper.getMainLooper()) &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">handleMessage</span><span class="hljs-params">(msg: <span class="hljs-type">Message</span>)</span></span> &#123;
+        <span class="hljs-comment">//主线程</span>
+    &#125;
+&#125;
+
+<span class="hljs-comment">//方式二: send message</span>
+thread &#123;
+    <span class="hljs-comment">//子线程</span>
+    <span class="hljs-keyword">val</span> msg = Message.obtain()
+    uiMsgHandler.sendMessage(msg)
+&#125;</code></pre>
+
+<h2 id="运行流程-5"><a href="#运行流程-5" class="headerlink" title="运行流程"></a>运行流程</h2><p>用于线程间通信</p>
+<ul>
+<li>Looper.prepareMainLooper()<ul>
+<li>ThreadLocal&lt;Looper&gt; sThreadLocal &#x3D; new ThreadLocal&lt;Looper&gt;()</li>
+<li>Looper sMainLooper &#x3D; new Looper()<ul>
+<li>MessageQueue sQueue &#x3D; new MessageQueue()</li>
+</ul>
+</li>
+<li>sThreadLocal.set(sMainLooper)</li>
+</ul>
+</li>
+<li>H sMainThreadHandler &#x3D; new H()</li>
+<li>Looper.loop()<ul>
+<li>for(;;) { loopOnce() }<ul>
+<li>Message msg &#x3D; sMainLooper.mQueue.next()<ul>
+<li>mQueue为空时 native阻塞</li>
+</ul>
+</li>
+<li>msg.target.dispatchMessage(msg)<ul>
+<li>handleCallback(msg)<ul>
+<li>msg.callback.run()</li>
+</ul>
+</li>
+<li>handleMessage(msg)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="子概念-3"><a href="#子概念-3" class="headerlink" title="子概念"></a>子概念</h2><p><strong>AsyncTask</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-comment">//MyAsyncTask.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MyAsyncTask</span> : <span class="hljs-type">AsyncTask</span>&lt;<span class="hljs-type">Int, Int, String</span>&gt;() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onPreExecute</span><span class="hljs-params">()</span></span> &#123; &#125; <span class="hljs-comment">//主线程</span>
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">doInBackground</span><span class="hljs-params">(<span class="hljs-keyword">vararg</span> params: <span class="hljs-type">Int</span>)</span></span>: String &#123; &#125; <span class="hljs-comment">//子线程</span>
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onProgressUpdate</span><span class="hljs-params">(<span class="hljs-keyword">vararg</span> values: <span class="hljs-type">Int</span>)</span></span> &#123;&#125; <span class="hljs-comment">//主线程</span>
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onPostExecute</span><span class="hljs-params">(result: <span class="hljs-type">String</span>)</span></span> &#123; &#125; <span class="hljs-comment">//主线程</span>
+&#125;</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> asyncTask = MyAsyncTask()
+asyncTask.execute(<span class="hljs-number">1</span>)
+
+<span class="hljs-comment">//取消</span>
+asyncTask.cancel(<span class="hljs-literal">true</span>)</code></pre>
+
+<p>运行流程</p>
+<ul>
+<li>Handler + 线程池</li>
+</ul>
+<p>线程池</p>
+<ul>
+<li>参数<ul>
+<li>核心线程数：线程池中保持存活的最小线程数</li>
+<li>最大线程数：线程池允许创建的最大线程数</li>
+<li>线程空闲时间：非核心线程的最长存活时间</li>
+<li>时间单位：线程空闲时间单位</li>
+<li>工作队列：<ul>
+<li>LinkedBlockingQueue: 无限容量，生产者和消费者速度不一致时</li>
+<li>ArrayBlockingQueue: 指定容量，生产者和消费者速度差不多时</li>
+<li>SynchronousQueue: 无容量，任务直接传递给执行者</li>
+</ul>
+</li>
+<li>线程工程：设置线程命名规则，优先级</li>
+<li>拒绝策略：当线程池和工作队列都满了时，新任务的处理策略</li>
+</ul>
+</li>
+</ul>
+<p><strong>HandlerThread</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> handlerThread = HandlerThread(<span class="hljs-string">&quot;name&quot;</span>)
+handlerThread.start()
+
+<span class="hljs-keyword">val</span> handler = Handler(handlerThread.looper)
+thread &#123;
+    <span class="hljs-comment">//子线程</span>
+    handler.post(Runnable &#123;
+        <span class="hljs-comment">//主线程</span>
+    &#125;)
+&#125;</code></pre>
+
+<p>运行流程</p>
+<ul>
+<li>Handler + Thread</li>
+</ul>
+<p><strong>IntentService</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-keyword">this</span>, MyIntentService::<span class="hljs-keyword">class</span>.java)
+intent.action = <span class="hljs-string">&quot;action_name&quot;</span>
+startService(intent)</code></pre>
+
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--&gt;AndroidManifest.xml&lt;--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">service</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.handler.MyIntentService&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span></code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//MyIntentService.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MyIntentService</span> : <span class="hljs-type">IntentService</span>(<span class="hljs-string">&quot;name&quot;</span>) &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onHandleIntent</span><span class="hljs-params">(intent: <span class="hljs-type">Intent</span>)</span></span> &#123;
+        <span class="hljs-keyword">when</span> (intent.action) &#123;
+            <span class="hljs-string">&quot;action_name&quot;</span> -&gt; &#123; &#125; <span class="hljs-comment">//子线程</span>
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<p>运行流程</p>
+<ul>
+<li>HandlerThread + Service</li>
+</ul>
+<h1 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h1><h2 id="使用流程-5"><a href="#使用流程-5" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs xml"><span class="hljs-comment">&lt;!--&gt;AndroidManifest.xml&lt;--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">service</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.binder.RemoteService&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:enabled</span>=<span class="hljs-string">&quot;true&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;true&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:process</span>=<span class="hljs-string">&quot;:remote_process&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;remote_service&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">service</span>&gt;</span></code></pre>
+
+<p><strong>AIDL进程间通信</strong></p>
+<pre><code class="hljs java"><span class="hljs-comment">//IAidlInterface.aidl</span>
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">IAidlInterface</span> &#123;
+    <span class="hljs-type">int</span> <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>
+&#125;</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//RemoteService.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">RemoteService</span> : <span class="hljs-type">Service</span>() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onBind</span><span class="hljs-params">(intent: <span class="hljs-type">Intent</span>)</span></span>: IBinder &#123;
+        <span class="hljs-keyword">return</span> AidlInterface()
+    &#125;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">inner</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AidlInterface</span> : <span class="hljs-type">IAidlInterface.Stub</span>() &#123;
+        <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">add</span><span class="hljs-params">(a: <span class="hljs-type">Int</span>, b: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Int</span> &#123;
+            <span class="hljs-keyword">return</span> a + b
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> remoteService: IAidlInterface? = <span class="hljs-literal">null</span>
+<span class="hljs-keyword">val</span> remoterServiceConnection = <span class="hljs-keyword">object</span> : ServiceConnect &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onServiceConnected</span><span class="hljs-params">(name: <span class="hljs-type">ComponentName</span>, service: <span class="hljs-type">IBinder</span>)</span></span> &#123;
+        remoteService = IAidlInterface.Stub.asInterface(service)
+    &#125;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onServiceDisconnected</span><span class="hljs-params">(name: <span class="hljs-type">ComponentName</span>)</span></span> &#123;&#125;
+&#125;
+
+<span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-string">&quot;remote_service&quot;</span>)
+intent.`<span class="hljs-keyword">package</span>` = <span class="hljs-string">&quot;com.exampale&quot;</span>
+bindService(intent, remoteServiceConnection, BIND_AUTO_CREATE)
+
+<span class="hljs-keyword">val</span> result = remoteService?.add(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)</code></pre>
+
+<p><strong>IBinder直接进程间通信</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-comment">//RemoteService.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">RemoteService</span> : <span class="hljs-type">Service</span>() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onBind</span><span class="hljs-params">(intent: <span class="hljs-type">Intent</span>)</span></span>: IBinder &#123;
+        <span class="hljs-keyword">return</span> MyBinder()
+    &#125;
+
+    <span class="hljs-keyword">inner</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyBinder</span> : <span class="hljs-type">Binder</span>() &#123;
+        <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onTransact</span><span class="hljs-params">(code: <span class="hljs-type">Int</span>, <span class="hljs-keyword">data</span>: <span class="hljs-type">Parcel</span>, reply: <span class="hljs-type">Parcel</span>, flags: <span class="hljs-type">Int</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+            <span class="hljs-keyword">val</span> a = <span class="hljs-keyword">data</span>.readInt()
+            <span class="hljs-keyword">val</span> b = <span class="hljs-keyword">data</span>.readInt()
+            reply.writeInt(a + b)
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> remoteService: IBinder? = <span class="hljs-literal">null</span>
+<span class="hljs-keyword">val</span> remoterServiceConnection = <span class="hljs-keyword">object</span> : ServiceConnect &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onServiceConnected</span><span class="hljs-params">(name: <span class="hljs-type">ComponentName</span>, service: <span class="hljs-type">IBinder</span>)</span></span> &#123;
+        remoteService = service
+    &#125;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onServiceDisconnected</span><span class="hljs-params">(name: <span class="hljs-type">ComponentName</span>)</span></span> &#123;&#125;
+&#125;
+
+<span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-string">&quot;remote_service&quot;</span>)
+intent.`<span class="hljs-keyword">package</span>` = <span class="hljs-string">&quot;com.exampale&quot;</span>
+bindService(intent, remoteServiceConnection, BIND_AUTO_CREATE)
+
+<span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> = Parcel.obtain()
+<span class="hljs-keyword">val</span> reply = Parcel.obtain()
+
+remoteService.transact(<span class="hljs-number">1</span>, <span class="hljs-keyword">data</span>, reply, <span class="hljs-number">0</span>)
+<span class="hljs-keyword">val</span> result = reply.readInt()</code></pre>
+
+<h2 id="运行流程-6"><a href="#运行流程-6" class="headerlink" title="运行流程"></a>运行流程</h2><ul>
+<li>本质是客户端通过Binder代理对象 transact发送数据，服务端通过Binder onTransact接收数据并返回数据</li>
+<li>Binder是虚拟的物理设备驱动</li>
+<li>用于进程间通信</li>
+<li>client-server通信结构，代理接口和server定义的方法一一对应</li>
+</ul>
+<p>代码流程 &#x2F;&#x2F;没看明白</p>
+<ul>
+<li>BinderProxy transact, transactNative (<strong>native</strong>)</li>
+<li>android_util_Binder.cpp android_os_BinderProxy_transact<ul>
+<li><code>IBinder* target = getBPNativeData(env, obj)-&gt;mObject.get();</code></li>
+</ul>
+</li>
+<li>BpBinder.cpp transact</li>
+<li>IPCThreadState.cpp transact &#x2F;&#x2F;依然在client进程中<ul>
+<li>IPCThreadState.cpp writeTransactionData</li>
+</ul>
+</li>
+<li>IPCThreadState.cpp waitForResponse<br>  talkWithDriver<ul>
+<li>ioctl.c ioctl</li>
+<li>…</li>
+<li>binder.c binder_ioctl</li>
+<li>android_util_Binder.cpp</li>
+</ul>
+</li>
+<li>IPCThreadState.cpp executeCommand (BR_TRANSACTION) &#x2F;&#x2F;切换到server进程了</li>
+<li>IPCThreadState.cpp transact</li>
+<li>Binder.cpp transact</li>
+<li>android_util_Binder.cpp JavaBBinder.onTransact</li>
+<li>Binder execTransact, execTransactInternal, onTransact</li>
+</ul>
+<p>参考了链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/824db350dce6">https://www.jianshu.com/p/824db350dce6</a></p>
+<h1 id="View"><a href="#View" class="headerlink" title="View"></a>View</h1><h2 id="使用流程：使用控件，自定义控件"><a href="#使用流程：使用控件，自定义控件" class="headerlink" title="使用流程：使用控件，自定义控件"></a>使用流程：使用控件，自定义控件</h2><pre><code class="hljs kotlin"><span class="hljs-comment">//MyLinearLayout.kt</span>
+MyLinearLayout(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) &#123;
+     <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onMeasure</span><span class="hljs-params">(widthMeasureSpec: <span class="hljs-type">Int</span>, heightMeasureSpec: <span class="hljs-type">Int</span>)</span></span> &#123;
+        <span class="hljs-keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onLayout</span><span class="hljs-params">(changed: <span class="hljs-type">Boolean</span>, l: <span class="hljs-type">Int</span>, t: <span class="hljs-type">Int</span>, r: <span class="hljs-type">Int</span>, b: <span class="hljs-type">Int</span>)</span></span> &#123;
+        <span class="hljs-keyword">super</span>.onLayout(changed, l, t, r, b)
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onDraw</span><span class="hljs-params">(canvas: <span class="hljs-type">Canvas</span>?)</span></span> &#123;
+        <span class="hljs-keyword">super</span>.onDraw(canvas)
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//MyView.kt</span>
+MyView(context: Context, attrs: AttributeSet): View(context, attrs) &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onMeasure</span><span class="hljs-params">(widthMeasureSpec: <span class="hljs-type">Int</span>, heightMeasureSpec: <span class="hljs-type">Int</span>)</span></span> &#123;
+        <span class="hljs-keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onLayout</span><span class="hljs-params">(changed: <span class="hljs-type">Boolean</span>, l: <span class="hljs-type">Int</span>, t: <span class="hljs-type">Int</span>, r: <span class="hljs-type">Int</span>, b: <span class="hljs-type">Int</span>)</span></span> &#123;
+        <span class="hljs-keyword">super</span>.onLayout(changed, l, t, r, b)
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onDraw</span><span class="hljs-params">(canvas: <span class="hljs-type">Canvas</span>?)</span></span> &#123;
+        <span class="hljs-keyword">super</span>.onDraw(canvas)
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--&gt;activity_main.xml&lt;--&gt;</span>
+<span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">io.taninety.androidlearn.view.MyLinearLayout</span> </span>
+<span class="hljs-tag">    <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;match_parent&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;match_parent&quot;</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">io.taninety.androidlearn.view.MyView</span></span>
+<span class="hljs-tag">        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;200dp&quot;</span></span>
+<span class="hljs-tag">        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;200dp&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">FrameLayout</span>&gt;</span></code></pre>
+
+<h2 id="运行流程：绘制流程"><a href="#运行流程：绘制流程" class="headerlink" title="运行流程：绘制流程"></a>运行流程：绘制流程</h2><ul>
+<li>onMeasure</li>
+<li>onLayout</li>
+<li>onDraw</li>
+</ul>
+<h1 id="MotionEvent"><a href="#MotionEvent" class="headerlink" title="MotionEvent"></a>MotionEvent</h1><h2 id="使用流程：自定义控件，滑动冲突"><a href="#使用流程：自定义控件，滑动冲突" class="headerlink" title="使用流程：自定义控件，滑动冲突"></a>使用流程：自定义控件，滑动冲突</h2><pre><code class="hljs kotlin"><span class="hljs-comment">//EventActivity.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">EventActivity</span> : <span class="hljs-type">AppCompatActivity</span>() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">dispatchTouchEvent</span><span class="hljs-params">(ev: <span class="hljs-type">MotionEvent</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onTouchEvent</span><span class="hljs-params">(ev: <span class="hljs-type">MotionEvent</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//MyLinearLayout.kt</span>
+MyLinearLayout(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">dispatchTouchEvent</span><span class="hljs-params">(ev: <span class="hljs-type">MotionEvent</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onInterceptTouchEvent</span><span class="hljs-params">(ev: <span class="hljs-type">MotionEvent</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onTouchEvent</span><span class="hljs-params">(ev: <span class="hljs-type">MotionEvent</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//MyView.kt</span>
+MyView(context: Context, attrs: AttributeSet): View(context, attrs) &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">dispatchTouchEvent</span><span class="hljs-params">(ev: <span class="hljs-type">MotionEvent</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onTouchEvent</span><span class="hljs-params">(ev: <span class="hljs-type">MotionEvent</span>)</span></span>: <span class="hljs-built_in">Boolean</span> &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    &#125;
+&#125;</code></pre>
+
+<h2 id="运行流程：事件分发流程"><a href="#运行流程：事件分发流程" class="headerlink" title="运行流程：事件分发流程"></a>运行流程：事件分发流程</h2><ul>
+<li>事件捕获：由父布局到子布局<ul>
+<li>dispatchTouchEvent<ul>
+<li>onInterceptTouchEvent 是否拦截<ul>
+<li>如果拦截，onTouchEvent</li>
+<li>如果不拦截，子布局 dispatchTouchEvent</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>目标处理：返回值，是否消费事件</li>
+<li>事件冒泡：由子布局到父布局<ul>
+<li>如果子布局返回false，事件未被消费，onTouchEvent处理</li>
+<li>如果子布局返回true，结束</li>
+</ul>
+</li>
+</ul>
+<h1 id="ListView"><a href="#ListView" class="headerlink" title="ListView"></a>ListView</h1><h2 id="使用流程-6"><a href="#使用流程-6" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> adatper = ListViewAdapter(<span class="hljs-keyword">this</span>)
+binding.listview.adapter = adapter
+adapter.add(<span class="hljs-string">&quot;测试&quot;</span>)</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//ListViewAdapter.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ListViewAdapter</span>(context: Context): ArrayAdapter&lt;String&gt;(context, R.layout.item) &#123;
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">ViewHolder</span> &#123;
+        <span class="hljs-keyword">var</span> textView: TextView? = <span class="hljs-literal">null</span>
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getView</span><span class="hljs-params">(position: <span class="hljs-type">Int</span>, convertView: <span class="hljs-type">View</span>?, parent: <span class="hljs-type">ViewGroup</span>)</span></span>: View &#123;
+        <span class="hljs-keyword">var</span> view: View
+        <span class="hljs-keyword">var</span> viewHolder: ViewHolder
+        <span class="hljs-comment">//优化性能</span>
+        <span class="hljs-keyword">if</span> (convertView == <span class="hljs-literal">null</span>) &#123;
+            view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, <span class="hljs-literal">false</span>)
+            viewHolder = ViewHolder().apply &#123;
+                textView = view.findViewById(R.id.text_view)
+            &#125;
+            view.tag = viewHolder
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            view = convertView
+            viewHolder = convertView.tag <span class="hljs-keyword">as</span> ViewHolder
+        &#125;
+
+        viewHolder.textView?.text = getItem(position)
+        <span class="hljs-keyword">return</span> view
+    &#125;
+&#125;</code></pre>
+
+<h2 id="运行流程-7"><a href="#运行流程-7" class="headerlink" title="运行流程"></a>运行流程</h2><ul>
+<li>RecycleBin缓存机制</li>
+</ul>
+<h1 id="RecyclerView"><a href="#RecyclerView" class="headerlink" title="RecyclerView"></a>RecyclerView</h1><h2 id="使用流程-7"><a href="#使用流程-7" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> recyclerView = binding.recyclerView
+recyclerView.layoutManager = LinearyLayoutManager(<span class="hljs-keyword">this</span>)
+
+<span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> = listOf&lt;String&gt;()
+recyclerView.adapter = Adapter(<span class="hljs-keyword">data</span>)</code></pre>
+
+<pre><code class="hljs kotlin"><span class="hljs-comment">//Adapter.kt</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Adapter</span>(<span class="hljs-keyword">val</span> <span class="hljs-keyword">data</span> : List&lt;String&gt;) : RecyclerView.Adapter&lt;Adapter.MyViewHolder&gt;() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCreateViewHolder</span><span class="hljs-params">(parent: <span class="hljs-type">ViewGroup</span>, viewType: <span class="hljs-type">Int</span>)</span></span> : MyViewHolder &#123;
+        <span class="hljs-keyword">val</span> view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, <span class="hljs-literal">false</span>)
+        <span class="hljs-keyword">return</span> MyViewHolder(view)
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onBindViewHolder</span><span class="hljs-params">(holder: <span class="hljs-type">MyViewHolder</span>, position)</span></span> &#123;
+        holder.bind(<span class="hljs-keyword">data</span>[position])
+    &#125;
+    
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">getItemCount</span><span class="hljs-params">()</span></span> = <span class="hljs-keyword">data</span>.size
+
+    <span class="hljs-keyword">inner</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyViewHolder</span>(<span class="hljs-keyword">val</span> view) : RecyclerView.ViewHolder(view) &#123;
+        <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">bind</span><span class="hljs-params">(item: <span class="hljs-type">String</span>)</span></span> &#123;
+            <span class="hljs-keyword">val</span> textView = view.findViewById&lt;TextView&gt;
+            textView.text = item
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h2 id="运行流程-8"><a href="#运行流程-8" class="headerlink" title="运行流程"></a>运行流程</h2><p>四级缓存</p>
+<ul>
+<li>mAttachedScrap&#x2F;mChangedScrap 不需要重新绑定</li>
+<li>mCachedViews 上线两个</li>
+<li>mViewCacheExtension 很少用</li>
+<li>mRecyclerPool 需要重新绑定，可以设置多个RecyclerView复用</li>
+</ul>
+<h1 id="Kotlin-Coroutine"><a href="#Kotlin-Coroutine" class="headerlink" title="Kotlin Coroutine"></a>Kotlin Coroutine</h1><h2 id="使用流程：协程使用"><a href="#使用流程：协程使用" class="headerlink" title="使用流程：协程使用"></a>使用流程：协程使用</h2><p>开启协程作用域的方法和对应特性</p>
+<ul>
+<li>GlobalScope 不受生命周期限制，直接使用</li>
+<li>MainScope 主线程作用域</li>
+<li>lifecycleScope 生命周期作用域，在activity等有生命周期的组件中使用，在Destoryed的时候回自动结束</li>
+<li>viewModelScope viewModel范围，view被回收时回自动结束</li>
+</ul>
+<p>调度程序</p>
+<ul>
+<li>不指定 从启动它的CoroutineScope继承</li>
+<li>Dispatchs.MAIN Android UI线程中执行</li>
+<li>Dispatchs.IO 子线程，磁盘或者网络IO操作</li>
+<li>Dispatchs.Default 子线程，CPU密集工作</li>
+<li>Dispatchers.Unconfined 从当前线程直接执行</li>
+</ul>
+<h2 id="运行流程-9"><a href="#运行流程-9" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="OkHttp"><a href="#OkHttp" class="headerlink" title="OkHttp"></a>OkHttp</h1><h2 id="使用流程-8"><a href="#使用流程-8" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> request = Request.Builder()
+    .url(<span class="hljs-string">&quot;https://taninety.github.io/&quot;</span>)
+    .build()
+
+<span class="hljs-comment">//同步请求</span>
+thread &#123;
+    <span class="hljs-keyword">val</span> call = client.newCall(request)
+    <span class="hljs-keyword">val</span> response = call.execute()
+&#125;
+
+<span class="hljs-comment">//异步请求</span>
+<span class="hljs-keyword">val</span> call = client.newCall(request)
+call.enqueue(<span class="hljs-keyword">object</span>: Callback &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onFailure</span><span class="hljs-params">(call: <span class="hljs-type">Call</span>, e: <span class="hljs-type">IOException</span>)</span></span> &#123;
+
+    &#125;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onResponse</span><span class="hljs-params">(call: <span class="hljs-type">Call</span>, response: <span class="hljs-type">Response</span>)</span></span> &#123;
+        <span class="hljs-comment">//子线程</span>
+    &#125;
+&#125;)</code></pre>
+
+<h2 id="运行流程-10"><a href="#运行流程-10" class="headerlink" title="运行流程"></a>运行流程</h2><p>拦截器</p>
+<ul>
+<li>RetryAndFollowUpInterceptor 失败重定向</li>
+<li>BrigeInterceptor 将用户请求转换成服务器可接收，将服务器响应转成用户可接受的</li>
+<li>CacheInterceptor 读取和更新缓存</li>
+<li>ConnectInterceptor 和服务端连接</li>
+<li>CallServerInterceptor 发送请求，接收相应</li>
+</ul>
+<h1 id="Glide"><a href="#Glide" class="headerlink" title="Glide"></a>Glide</h1><h2 id="使用流程-9"><a href="#使用流程-9" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> picUrl = <span class="hljs-string">&quot;https://xxxx&quot;</span>
+Glide.with(<span class="hljs-keyword">this</span>)
+    .load(<span class="hljs-string">&quot;picUrl&quot;</span>)
+    .into(binding.imageView)</code></pre>
+
+<h2 id="运行流程-11"><a href="#运行流程-11" class="headerlink" title="运行流程"></a>运行流程</h2><p>做了哪些优化</p>
+<ul>
+<li>绑定声明周期</li>
+<li>缓存</li>
+<li>线程池</li>
+</ul>
+<h1 id="LeakCanary"><a href="#LeakCanary" class="headerlink" title="LeakCanary"></a>LeakCanary</h1><h2 id="使用流程-10"><a href="#使用流程-10" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs plaintext">debugImplementation &#x27;com.squareup.leakcanary:leakcanary-android:2.12&#x27;</code></pre>
+
+<h2 id="运行流程-12"><a href="#运行流程-12" class="headerlink" title="运行流程"></a>运行流程</h2><p>LeakCanary Hook 到Android生命周期，自动检测Activity和Fragment onDestory时机，使用ObjectWathcer对被Destory的对象创建弱引用，GC发生后，若ObjectWatcher持有的弱引用没有清除，说明该对象未被回收，可能产生泄露。</p>
+<p>默认检测的对象如下</p>
+<ul>
+<li>被销毁的Activiy实例</li>
+<li>被销毁的Frament实例</li>
+<li>被销毁的View实例</li>
+<li>被清楚的ViewModel实例</li>
+</ul>
+<p>也可以任意查看一个不再使用的对象</p>
+<pre><code class="hljs plaintext">AppWatcher.objectWatcher.watch(mDetachedView, &quot;View was detached&quot;)</code></pre>
+
+<h1 id="MPAndroidChart"><a href="#MPAndroidChart" class="headerlink" title="MPAndroidChart"></a>MPAndroidChart</h1><h2 id="使用流程-11"><a href="#使用流程-11" class="headerlink" title="使用流程"></a>使用流程</h2><h2 id="运行流程-13"><a href="#运行流程-13" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h1><h2 id="使用流程-12"><a href="#使用流程-12" class="headerlink" title="使用流程"></a>使用流程</h2><p><strong>Camera1接口</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> camera: Camera? = <span class="hljs-literal">null</span>
+
+<span class="hljs-comment">//预览</span>
+<span class="hljs-keyword">val</span> surfaceView = SurfaceView(<span class="hljs-keyword">this</span>)
+<span class="hljs-keyword">val</span> surfaceViewCallback = <span class="hljs-keyword">object</span> : SurfaceHolder.Callback &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">surfaceCreated</span><span class="hljs-params">(holder: <span class="hljs-type">SurfaceHolder</span>)</span></span> &#123;
+        camera = Camera.<span class="hljs-keyword">open</span>()
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">surfaceChanged</span><span class="hljs-params">(holder: <span class="hljs-type">SurfaceHolder</span>, formart: <span class="hljs-type">Int</span>, width: <span class="hljs-type">Int</span>, height: <span class="hljs-type">Int</span>)</span></span> &#123;
+        <span class="hljs-comment">//设置预览大小</span>
+        <span class="hljs-comment">//val cameraParams = camera.parameters</span>
+        <span class="hljs-comment">//val bestSize = getBestPreviewSize(width, height, cameraParams)</span>
+        <span class="hljs-comment">//cameraParams.setPreviewSize(bestSize.width, bestSize.height)</span>
+        <span class="hljs-comment">//camera.parameters = cameraParams</span>
+
+        camera?.setPreviewDisplay = holder
+        camera?.setPreview()
+    &#125;
+
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">surfaceDestoryed</span><span class="hljs-params">(holder: <span class="hljs-type">SurfaceHolder</span>)</span></span> &#123;
+        camera?.stopPreview()
+        camera?.release()
+        camera = <span class="hljs-literal">null</span>
+    &#125;
+&#125;
+surfaceView.holder.addCallback(surfaceViewCallback)
+binding.container.add(surfaceView)
+
+<span class="hljs-comment">//拍照</span>
+<span class="hljs-keyword">val</span> pictureCallback = <span class="hljs-keyword">object</span> = Camera.PictureCallback &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onPictureTaken</span><span class="hljs-params">(<span class="hljs-keyword">data</span>: <span class="hljs-type">ByteArray</span>, camera Camera)</span></span> &#123;
+        <span class="hljs-keyword">val</span> bitmap = BitmapFactory.decodeByteArray(<span class="hljs-keyword">data</span>, <span class="hljs-number">0</span>, <span class="hljs-keyword">data</span>.size)
+        binding.imageView.setImageBitmap(bitmap)
+
+        <span class="hljs-comment">//再次开启预览</span>
+        camera.startPreview
+    &#125;
+&#125;
+camera?.takePicture(<span class="hljs-literal">null</span>, pictureCallback)</code></pre>
+
+<p><strong>Camera2接口</strong></p>
+<pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> cameraManager = getSystemService(Context.CAMERA_SERVICE) <span class="hljs-keyword">as</span> CameraManager
+<span class="hljs-keyword">var</span> cameraDevice : CameraDevice? = <span class="hljs-literal">null</span>
+<span class="hljs-keyword">val</span> handler = Handler &#123; <span class="hljs-literal">true</span> &#125;
+<span class="hljs-keyword">val</span> textureView = TextureView(<span class="hljs-keyword">this</span>)
+<span class="hljs-keyword">var</span> surfaceTexture: SurfaceTexture? = <span class="hljs-literal">null</span>
+<span class="hljs-keyword">var</span> captureSession: CameraCaptureSession? = <span class="hljs-literal">null</span>
+<span class="hljs-keyword">val</span> imageReader = ImageReader.newInstance(<span class="hljs-number">100</span>, <span class="hljs-number">100</span>, ImageFormat.JPEG, <span class="hljs-number">1</span>)
+
+<span class="hljs-keyword">val</span> cameraDeviceStateCallback = <span class="hljs-keyword">object</span> : CameraDevice.StateCallback() &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onOpened</span><span class="hljs-params">(camera: <span class="hljs-type">CameraDevice</span>)</span></span> &#123;
+        cameraDevice = camera
+        <span class="hljs-comment">//开启预览</span>
+        createCameraPreviewSession()
+    &#125;
+    ...
+&#125;
+
+<span class="hljs-keyword">val</span> textureListener = <span class="hljs-keyword">object</span> : SurfaceTextureListener &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onSurfaceTextureAvailable</span><span class="hljs-params">(texture: <span class="hljs-type">SurfaveTexture</span>, width: <span class="hljs-type">Int</span>, height: <span class="hljs-type">Int</span>)</span></span> &#123;
+        surfaceTexture = textrue
+        <span class="hljs-comment">//开启相机</span>
+        cameraManager.openCamera(<span class="hljs-string">&quot;0&quot;</span>, cameraDeviceStateCallback, handler)
+    &#125;
+    ...
+&#125;
+
+textureView.surfaceTextureListener = textureListener
+binding.container.addView(textureView)
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">createCameraPreviewSession</span><span class="hljs-params">()</span></span> &#123;
+    <span class="hljs-keyword">val</span> previewSurface = Surface(surfaceTexture)
+    <span class="hljs-keyword">val</span> previewBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEPLATE_PREVIEW)
+    previewBuilder.addTarget(previewSurface)
+
+    <span class="hljs-keyword">val</span> cameraCaptureSessionStateCallback = <span class="hljs-keyword">object</span> : CameraCaptureSession.StateCallback() &#123;
+        onConfigured(session: CameraCaptureSession) &#123;
+            captureSession = session
+            session.setRepeatingRequest(previewBuilder.build(), <span class="hljs-literal">null</span>, handler)
+            <span class="hljs-comment">//拍照</span>
+            takePicture()
+        &#125;
+        ...
+    &#125;
+    cameraDevice.createCaptureSession(listOf(previewSurface, imageReader.surface), cameraCaptureSessionStateCallback, <span class="hljs-literal">null</span>)
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">takePicture</span><span class="hljs-params">()</span></span> &#123;
+    <span class="hljs-keyword">val</span> imageAvailableListener = <span class="hljs-keyword">object</span> : ImageReader.OnImageAvailableListener &#123;
+        <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onImageAvailable</span><span class="hljs-params">(reader : <span class="hljs-type">ImageReader</span>)</span></span> &#123;
+            <span class="hljs-keyword">val</span> image = reader.aquireLatestImage()
+            <span class="hljs-comment">//保存图片</span>
+            setImageToImageView(image)
+            image.close()
+        &#125;
+    &#125;
+    imageReader.setOnImagerAvailableListener(imageAvailableListener, handler)
+    
+    <span class="hljs-keyword">val</span> captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
+    captureBuilder.addTarget(imageReader.surface)
+    
+    <span class="hljs-keyword">val</span> captureCallback = <span class="hljs-keyword">object</span> : CameraCaptureSession.Captureback() &#123;
+        <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onCaptureCompleted</span><span class="hljs-params">(...)</span></span> &#123;&#125;
+    &#125;
+    captureSession.capture(captureBuilder.build(), captureCallback, <span class="hljs-literal">null</span>)
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">setImageToImageView</span><span class="hljs-params">(image: <span class="hljs-type">Image</span>)</span></span> &#123;
+    <span class="hljs-keyword">val</span> buffer = image.planes[<span class="hljs-number">0</span>].buffer
+    <span class="hljs-keyword">val</span> bytes = ByteArray(buffer.remaining())
+    buffer.<span class="hljs-keyword">get</span>(bytes)
+    <span class="hljs-keyword">val</span> bitmap = BimapFactory.decodeByteArray(bytes, <span class="hljs-number">0</span>, bytes.size)
+    binding.imageView.setImageBitmap(bitmap)
+&#125;</code></pre>
+
+<h2 id="运行流程-14"><a href="#运行流程-14" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Location"><a href="#Location" class="headerlink" title="Location"></a>Location</h1><h2 id="使用流程-13"><a href="#使用流程-13" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> locationManager = getSystemService(Context.LOCATION_SERVICE) <span class="hljs-keyword">as</span> LocationManager
+<span class="hljs-keyword">val</span> locationListener = <span class="hljs-keyword">object</span> : LocationManager &#123;
+    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onLocationChanged</span><span class="hljs-params">(location: <span class="hljs-type">Location</span>)</span></span> &#123;
+        locationManager.removeUpdates(<span class="hljs-keyword">this</span>)
+    &#125;
+&#125;
+
+locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, locationListener)</code></pre>
+
+<h2 id="运行流程：调用时序图"><a href="#运行流程：调用时序图" class="headerlink" title="运行流程：调用时序图"></a>运行流程：调用时序图</h2><ol>
+<li>LocationManager requestLocationUpdates</li>
+<li>ILocationManager registerLocationListener <strong>(Binder)</strong><ul>
+<li>registerLocationPendingIntent<ul>
+<li>LocationProviderManager.LocationPendingIntentRegistration</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>LocationManagerService registerLocationListener</li>
+<li>LocationProviderManager registerLocationRequest<ul>
+<li>LocationProviderManager.LocationListenerRegistration</li>
+</ul>
+</li>
+<li>父类 ListenerMultiplexer putRegistration, replaceRegistration, onRegistrationActiveChanged，updateService</li>
+<li>子类 LocationProviderManager registerWithService, reregisterWithService, setProviderRequest</li>
+<li>AbstractLocationProvider.Controller setRequest<ul>
+<li>MockableLocationProvider getController</li>
+</ul>
+</li>
+<li>AbstractLocationProvider onSetRequest &#x2F;&#x2F;使用线程池<ul>
+<li>GnssLocationProvider</li>
+<li>ProxyLocationProvider<ul>
+<li>onSetRequest</li>
+<li>ILocationProvider setRequest</li>
+<li>… (Network Location Provider)</li>
+<li>ProxyLocationProvider.Proxy onReportLocation</li>
+<li>父类 AbstractLocationProvider reportLocation</li>
+</ul>
+</li>
+<li>PassiveLocationProvider</li>
+<li>MockLocationProvider</li>
+</ul>
+</li>
+<li>GnssLocationProvider updateRequirements, startNavigating<ul>
+<li>startBatching</li>
+<li>GnssNative startBatch</li>
+<li>GnssNative.GnssHal startBatch</li>
+<li>GnssNative native_start_batch</li>
+</ul>
+</li>
+<li>GnssNative start</li>
+<li>GnssNative.GnssHal start</li>
+<li>GnssNative native_start</li>
+<li>com_android_server_location_GnssLocationProvider.cpp android_location_gnss_hal_GnssNative_start</li>
+<li>Gnss.cpp start </li>
+<li>… <strong>(native)</strong></li>
+<li>GnssCallback.cpp gnssLocationCbImpl, method_reportLocation</li>
+<li>GnssNative reportLocation</li>
+<li>GnssNative.LocationCallbacks onReportLocation</li>
+<li>子类 GnssLocationProvider onReportLocation， handleReportLocation</li>
+<li>父类 AbstractLocationProvider reportLocation</li>
+<li>AbstractLocationProvider.Listener onReportLocation</li>
+<li>LocationProviderManager onReportLocation<ul>
+<li>PassiveLocationProviderManager updateLocation</li>
+<li>PassiveLocationProvider updateLocation</li>
+<li>父类 AbstractLocationProvider reportLocation</li>
+</ul>
+</li>
+<li>LocationListenerRegistration acceptLocationChange</li>
+<li>父类 LocationRegistration acceptLocationChange</li>
+<li>LocationProviderManager.LocationTransport deliverOnLocationChanged</li>
+<li>子类 LocationListenerTransport deliverOnLocationChanged</li>
+<li>ILocationListener onLocationChanged <strong>(Binder)</strong></li>
+<li>LocationManager.LocationListenerTransport onLocationChanged</li>
+<li>LocationListener onLocationChanged</li>
+</ol>
+<p><strong>LocationManager 关键参数</strong></p>
+<ul>
+<li>创建请求 LocationRequest<ul>
+<li>使用 <ul>
+<li>createFromDeprecatedProvider<ul>
+<li>GPS</li>
+<li>Newtork</li>
+<li>Fused</li>
+<li>Passive</li>
+</ul>
+</li>
+<li>createFromDeprecatedCriteria<ul>
+<li>Power</li>
+<li>Accuracy</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>设置参数 <ul>
+<li>Interval 最小请求间隔</li>
+<li>MinUpdateDistance 最小更新距离</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>接收响应<ul>
+<li>LocationListener</li>
+<li>LocationListener + Handler</li>
+<li>LocationListener + Executor</li>
+<li>PendingIntent + Receiver</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2023 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>
