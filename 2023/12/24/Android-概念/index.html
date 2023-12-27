@@ -851,60 +851,7 @@ recyclerView.adapter = Adapter(<span class="hljs-keyword">data</span>)</code></p
 <li>Dispatchs.Default 子线程，CPU密集工作</li>
 <li>Dispatchers.Unconfined 从当前线程直接执行</li>
 </ul>
-<h2 id="运行流程-9"><a href="#运行流程-9" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="OkHttp"><a href="#OkHttp" class="headerlink" title="OkHttp"></a>OkHttp</h1><h2 id="使用流程-8"><a href="#使用流程-8" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> request = Request.Builder()
-    .url(<span class="hljs-string">&quot;https://taninety.github.io/&quot;</span>)
-    .build()
-
-<span class="hljs-comment">//同步请求</span>
-thread &#123;
-    <span class="hljs-keyword">val</span> call = client.newCall(request)
-    <span class="hljs-keyword">val</span> response = call.execute()
-&#125;
-
-<span class="hljs-comment">//异步请求</span>
-<span class="hljs-keyword">val</span> call = client.newCall(request)
-call.enqueue(<span class="hljs-keyword">object</span>: Callback &#123;
-    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onFailure</span><span class="hljs-params">(call: <span class="hljs-type">Call</span>, e: <span class="hljs-type">IOException</span>)</span></span> &#123;
-
-    &#125;
-    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onResponse</span><span class="hljs-params">(call: <span class="hljs-type">Call</span>, response: <span class="hljs-type">Response</span>)</span></span> &#123;
-        <span class="hljs-comment">//子线程</span>
-    &#125;
-&#125;)</code></pre>
-
-<h2 id="运行流程-10"><a href="#运行流程-10" class="headerlink" title="运行流程"></a>运行流程</h2><p>拦截器</p>
-<ul>
-<li>RetryAndFollowUpInterceptor 失败重定向</li>
-<li>BrigeInterceptor 将用户请求转换成服务器可接收，将服务器响应转成用户可接受的</li>
-<li>CacheInterceptor 读取和更新缓存</li>
-<li>ConnectInterceptor 和服务端连接</li>
-<li>CallServerInterceptor 发送请求，接收相应</li>
-</ul>
-<h1 id="Glide"><a href="#Glide" class="headerlink" title="Glide"></a>Glide</h1><h2 id="使用流程-9"><a href="#使用流程-9" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> picUrl = <span class="hljs-string">&quot;https://xxxx&quot;</span>
-Glide.with(<span class="hljs-keyword">this</span>)
-    .load(<span class="hljs-string">&quot;picUrl&quot;</span>)
-    .into(binding.imageView)</code></pre>
-
-<h2 id="运行流程-11"><a href="#运行流程-11" class="headerlink" title="运行流程"></a>运行流程</h2><p>做了哪些优化</p>
-<ul>
-<li>绑定声明周期</li>
-<li>缓存</li>
-<li>线程池</li>
-</ul>
-<h1 id="LeakCanary"><a href="#LeakCanary" class="headerlink" title="LeakCanary"></a>LeakCanary</h1><h2 id="使用流程-10"><a href="#使用流程-10" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs plaintext">debugImplementation &#x27;com.squareup.leakcanary:leakcanary-android:2.12&#x27;</code></pre>
-
-<h2 id="运行流程-12"><a href="#运行流程-12" class="headerlink" title="运行流程"></a>运行流程</h2><p>LeakCanary Hook 到Android生命周期，自动检测Activity和Fragment onDestory时机，使用ObjectWathcer对被Destory的对象创建弱引用，GC发生后，若ObjectWatcher持有的弱引用没有清除，说明该对象未被回收，可能产生泄露。</p>
-<p>默认检测的对象如下</p>
-<ul>
-<li>被销毁的Activiy实例</li>
-<li>被销毁的Frament实例</li>
-<li>被销毁的View实例</li>
-<li>被清楚的ViewModel实例</li>
-</ul>
-<p>也可以任意查看一个不再使用的对象</p>
-<pre><code class="hljs plaintext">AppWatcher.objectWatcher.watch(mDetachedView, &quot;View was detached&quot;)</code></pre>
-
-<h1 id="MPAndroidChart"><a href="#MPAndroidChart" class="headerlink" title="MPAndroidChart"></a>MPAndroidChart</h1><h2 id="使用流程-11"><a href="#使用流程-11" class="headerlink" title="使用流程"></a>使用流程</h2><h2 id="运行流程-13"><a href="#运行流程-13" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h1><h2 id="使用流程-12"><a href="#使用流程-12" class="headerlink" title="使用流程"></a>使用流程</h2><p><strong>Camera1接口</strong></p>
+<h2 id="运行流程-9"><a href="#运行流程-9" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h1><h2 id="使用流程-8"><a href="#使用流程-8" class="headerlink" title="使用流程"></a>使用流程</h2><p><strong>Camera1接口</strong></p>
 <pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> camera: Camera? = <span class="hljs-literal">null</span>
 
 <span class="hljs-comment">//预览</span>
@@ -1021,7 +968,7 @@ binding.container.addView(textureView)
     binding.imageView.setImageBitmap(bitmap)
 &#125;</code></pre>
 
-<h2 id="运行流程-14"><a href="#运行流程-14" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Location"><a href="#Location" class="headerlink" title="Location"></a>Location</h1><h2 id="使用流程-13"><a href="#使用流程-13" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> locationManager = getSystemService(Context.LOCATION_SERVICE) <span class="hljs-keyword">as</span> LocationManager
+<h2 id="运行流程-10"><a href="#运行流程-10" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Location"><a href="#Location" class="headerlink" title="Location"></a>Location</h1><h2 id="使用流程-9"><a href="#使用流程-9" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> locationManager = getSystemService(Context.LOCATION_SERVICE) <span class="hljs-keyword">as</span> LocationManager
 <span class="hljs-keyword">val</span> locationListener = <span class="hljs-keyword">object</span> : LocationManager &#123;
     <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onLocationChanged</span><span class="hljs-params">(location: <span class="hljs-type">Location</span>)</span></span> &#123;
         locationManager.removeUpdates(<span class="hljs-keyword">this</span>)
