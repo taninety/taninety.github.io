@@ -68,7 +68,130 @@
             </div>
             
             <div class="post-content">
-                
+                <h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>从用户使用角度</p>
+<ul>
+<li>用户先看到的是安装包，所以第一点<strong>包体积优化</strong></li>
+<li>安装应用之后，要启动应用，所以第二点是<strong>启动优化</strong></li>
+<li>启动之后要显示内容，内容的来源一般来源于网络，所以要做好<strong>网络优化</strong></li>
+<li>网络下载的数据会保存到数据库中，所以要做好<strong>数据库优化</strong></li>
+<li>内容显示之后要进行交互操作，做好<strong>卡顿优化</strong></li>
+<li>用户要持续使用应用，要做好<strong>稳定性优化</strong>和<strong>内存优化</strong></li>
+<li>应用退出后台后，可能回看下电量消耗，所以做<strong>耗电优化</strong></li>
+</ul>
+<p>从优化目的的角度</p>
+<ul>
+<li>流畅<ul>
+<li>卡顿优化</li>
+<li>布局优化</li>
+<li>绘制优化</li>
+</ul>
+</li>
+<li>稳定<ul>
+<li>内存优化</li>
+<li>稳定性优化</li>
+</ul>
+</li>
+<li>低耗损<ul>
+<li>耗电优化</li>
+<li>网络优化</li>
+</ul>
+</li>
+<li>小安装包<ul>
+<li>包体积优化</li>
+</ul>
+</li>
+</ul>
+<p>优化要注意几点</p>
+<ul>
+<li>常见的优化点</li>
+<li>可使用的工具</li>
+</ul>
+<h1 id="包体积优化"><a href="#包体积优化" class="headerlink" title="包体积优化"></a>包体积优化</h1><ul>
+<li>删除不用的资源</li>
+<li>不影响APP效果下，尽量压缩图片</li>
+<li>有限保留v7版本so库，删除其他版本so库</li>
+<li>代码混淆</li>
+</ul>
+<h1 id="启动优化"><a href="#启动优化" class="headerlink" title="启动优化"></a>启动优化</h1><ul>
+<li>非必要组件懒加载</li>
+<li>减少冷启动发生</li>
+<li>使用启动页过度</li>
+<li>添加载入进度动画</li>
+</ul>
+<h1 id="网络优化"><a href="#网络优化" class="headerlink" title="网络优化"></a>网络优化</h1><ul>
+<li>合并网络请求</li>
+<li>采用分页方式加载数据</li>
+<li>数据采用GZIP压缩</li>
+<li>使用缓存</li>
+<li>上传图片时尽量压缩</li>
+</ul>
+<h1 id="卡顿优化"><a href="#卡顿优化" class="headerlink" title="卡顿优化"></a>卡顿优化</h1><ul>
+<li>不在主线程进行IO操作，比如访问网络，读取数据，大文件</li>
+<li>减少布局嵌套层次，尽量使用ConstrainLayout</li>
+<li>ViewPager显示的时候才加载数据</li>
+<li>ListView：布局复用，使用ViewHolder避免查找控件，滑动时不加载图片</li>
+<li>避免过度绘制，不要给布局重复设置背景</li>
+<li>降低内存使用，GC频繁会引起卡顿</li>
+<li><strong>绘制优化</strong></li>
+<li><strong>布局优化</strong></li>
+</ul>
+<h1 id="稳定性优化"><a href="#稳定性优化" class="headerlink" title="稳定性优化"></a>稳定性优化</h1><p><strong>崩溃</strong></p>
+<p><strong>内存溢出OOM</strong></p>
+<ul>
+<li><strong>内存优化</strong></li>
+</ul>
+<p><strong>ANR</strong></p>
+<ul>
+<li>避免主线程操作耗时任务</li>
+<li>避免死锁</li>
+</ul>
+<h1 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h1><p><strong>减少内存使用</strong></p>
+<ul>
+<li>加载Bitmap时按照大小采样</li>
+<li>使用消息池&#x2F;线程池，避免创建过多临时对象</li>
+</ul>
+<p><strong>内存泄露</strong></p>
+<p>Activity销毁之后，仍旧被其他对象持有</p>
+<ul>
+<li>长周期对象持有短周期对象<ul>
+<li>静态变量持有Activity</li>
+<li>静态变量持有Activity内部的非静态类实例</li>
+</ul>
+</li>
+<li>仍在执行中的对象持有Activity内部的非静态类实例<ul>
+<li>MessageQueue中的Message，target持有Handler实例，而Handler是Activity中的非静态类<ul>
+<li>方案1：使用静态内部类 + 弱引用</li>
+<li>方案2：onDestroy时清空消息队列</li>
+</ul>
+</li>
+<li>AsyncTask?</li>
+</ul>
+</li>
+<li>资源未关闭<ul>
+<li>BroadcastReiver未注销</li>
+<li>Cursor&#x2F;Stream&#x2F;File未关闭</li>
+<li>Bitmap未释放内存</li>
+</ul>
+</li>
+<li>Webview产生的内存泄露<ul>
+<li>方案：使用其他进程</li>
+</ul>
+</li>
+</ul>
+<h1 id="耗电优化"><a href="#耗电优化" class="headerlink" title="耗电优化"></a>耗电优化</h1><ul>
+<li>减少后台唤醒操作</li>
+<li>切换到后台时，取消网络，GPS定位等不必要的耗电操作</li>
+</ul>
+<h1 id="布局优化"><a href="#布局优化" class="headerlink" title="布局优化"></a>布局优化</h1><ul>
+<li>减少View层级，优先选用LinearLayout，或者ContraintLayout</li>
+<li>使用include抽取组件公共部分</li>
+<li>使用自定义布局</li>
+</ul>
+<h1 id="绘制优化"><a href="#绘制优化" class="headerlink" title="绘制优化"></a>绘制优化</h1><ul>
+<li>onDraw中不要创建临时对象</li>
+<li>onDraw中不要做耗时任务</li>
+</ul>
+
             </div>
         </div>
     </div>

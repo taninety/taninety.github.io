@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            数据结构基础 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>数据结构基础</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2023/12/27</span>
+            </div>
+            
+            <div class="post-content">
+                <p>数据结构是算法的基础，所以先把数据结构列举完整。有三点java自带的库，自己的实现，时间和内存性能分析</p>
+<h1 id="数组-Array"><a href="#数组-Array" class="headerlink" title="数组 (Array)"></a>数组 (Array)</h1><p>标准库实现 <code>java.util.ArrayList</code></p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyArray</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span>[] array;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> size;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyArray</span><span class="hljs-params">(<span class="hljs-type">int</span> capacity)</span> &#123;
+        array = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[capacity];
+        size = <span class="hljs-number">0</span>;
+    &#125;
+
+    <span class="hljs-comment">//随机访问 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span>
+
+    <span class="hljs-comment">//随机修改 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">set</span><span class="hljs-params">(<span class="hljs-type">int</span> index, <span class="hljs-type">int</span> value)</span>
+
+    <span class="hljs-comment">//随机插入 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">int</span> index, <span class="hljs-type">int</span> data)</span> &#123; resize() &#125;
+
+    <span class="hljs-comment">//随机删除 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">remove</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span>
+
+    <span class="hljs-comment">//扩容 O(n)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">resize</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//遍历 O(n)</span>
+    <span class="hljs-comment">//末尾插入 O(1)</span>
+    <span class="hljs-comment">//末尾删除 O(1)</span>
+    <span class="hljs-comment">//搜索 O(n)</span>
+&#125;</code></pre>
+
+<h1 id="链表-Linked-List"><a href="#链表-Linked-List" class="headerlink" title="链表 (Linked List)"></a>链表 (Linked List)</h1><p>标准库实现 <code>java.util.LinkedList</code></p>
+<pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ListNode</span> &#123;
+    <span class="hljs-type">int</span> data;
+    ListNode next;
+&#125;</code></pre>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyLinkedList</span> &#123;
+    <span class="hljs-keyword">private</span> ListNode head;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyLinkedList</span><span class="hljs-params">()</span> &#123;
+        head = <span class="hljs-literal">null</span>;
+    &#125;
+
+    <span class="hljs-comment">//头部插入 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addFirst</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span>
+    
+    <span class="hljs-comment">//尾部插入 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addLast</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span>
+
+    <span class="hljs-comment">//随机插入 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">int</span> index, <span class="hljs-type">int</span> data)</span>
+
+    <span class="hljs-comment">//随机删除 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">remove</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span>
+
+    <span class="hljs-comment">//随机访问 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span>
+
+    <span class="hljs-comment">//随机修改 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">set</span><span class="hljs-params">(<span class="hljs-type">int</span> index, <span class="hljs-type">int</span> data)</span>
+
+    <span class="hljs-comment">//遍历 O(n)</span>
+    <span class="hljs-comment">//搜索 O(n)</span>
+&#125;</code></pre>
+
+<h1 id="栈-Stack"><a href="#栈-Stack" class="headerlink" title="栈 (Stack)"></a>栈 (Stack)</h1><p>标准库实现 <code>java.util.Stack</code></p>
+<pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StackNode</span> &#123;
+    <span class="hljs-type">int</span> data;
+    StackNode next;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">StackNode</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span> &#123;
+        <span class="hljs-built_in">this</span>.data = data;
+    &#125;
+&#125;</code></pre>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyStack</span> &#123;
+    <span class="hljs-keyword">private</span> StackNode top;
+
+    <span class="hljs-comment">//判空 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isEmpty</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//入栈 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">push</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span>
+
+    <span class="hljs-comment">//出栈 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">pop</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//栈顶元素 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">peek</span><span class="hljs-params">()</span>
+&#125;</code></pre>
+
+<h1 id="队列-Queue"><a href="#队列-Queue" class="headerlink" title="队列 (Queue)"></a>队列 (Queue)</h1><p>标准库实现 <code>java.util.LinkedList</code> (继承自接口 <code>java.util.Queue</code>)</p>
+<pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">QueueNode</span> &#123;
+    <span class="hljs-type">int</span> data;
+    QueueNode next;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">QueueNode</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span> &#123;
+        <span class="hljs-built_in">this</span>.data = data;
+    &#125;
+&#125;</code></pre>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyQueue</span> &#123;
+    <span class="hljs-keyword">private</span> QueueNode front;
+    <span class="hljs-keyword">private</span> QueueNote rear;
+
+    <span class="hljs-comment">//判空 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isEmpty</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//入队(enqueue) O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">offer</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span>
+
+    <span class="hljs-comment">//出队(dequeue) O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">poll</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//查看队首元素 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">peek</span><span class="hljs-params">()</span>
+&#125;</code></pre>
+
+<h1 id="树-Tree"><a href="#树-Tree" class="headerlink" title="树 (Tree)"></a>树 (Tree)</h1><p><strong>二叉搜索树</strong></p>
+<p>标准库实现 <code>无</code></p>
+<pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">TreeNode</span> &#123;
+    <span class="hljs-type">int</span> data;
+    TreeNode left;
+    TreeNode right;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">TreeNode</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span> &#123;
+        <span class="hljs-built_in">this</span>.data = data;
+    &#125;
+&#125;</code></pre>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyBinarySearchTree</span> &#123;
+    <span class="hljs-keyword">private</span> TreeNode root;
+
+    <span class="hljs-comment">//插入元素 (左节点 &lt; 根节点 &lt;右节点) O(log n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insert</span><span class="hljs-params">(<span class="hljs-type">int</span> data)</span> &#123; insertRec() &#125;
+
+    <span class="hljs-comment">//深度优先搜索(DFS) 先序遍历 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">preorder</span><span class="hljs-params">()</span> &#123; preorderRec() &#125;
+
+    <span class="hljs-comment">//深度优先搜索(DFS) 中序遍历 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">inorder</span><span class="hljs-params">()</span> &#123; inorderRec() &#125;
+
+    <span class="hljs-comment">//深度优先搜索(DFS) 后序遍历 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">postorder</span><span class="hljs-params">()</span> &#123; postorderRec() &#125;
+
+    <span class="hljs-comment">//广度优先搜索(BFS) 层次遍历 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">levelorder</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//删除元素 O(log n)</span>
+    <span class="hljs-comment">//搜索 O(log n) 不平衡时最差是O(n) 用红黑树防止这种情况</span>
+&#125;</code></pre>
+
+<p><strong>平衡二叉搜索树 (AVL树)</strong></p>
+<p>为了解决二叉搜索树不平衡退化成链表的问题</p>
+<p><strong>特化的AVL树 (红黑树)</strong></p>
+<p>为了解决平衡二叉搜索树，平衡过于频繁的问题</p>
+<p>标准库实现 <code>TreeSet</code></p>
+<pre><code class="hljs java"><span class="hljs-comment">//暂时放弃红黑树的插入删除操作，太复杂了</span></code></pre>
+
+<p>五条性质</p>
+<ol>
+<li>树的所有节点，要么是红色，要么是黑色</li>
+<li>树的根节点是黑色</li>
+<li>树中的叶子节点是黑色</li>
+<li>红色节点的子节点一定是黑色，也就是没有两个联在一起的红色节点</li>
+<li>每个节点到任意一个叶子节点，经过的黑色节点数量是相等的</li>
+</ol>
+<p>两个推论</p>
+<ol>
+<li>红黑树从根节点到叶子节点的最长路径，不会大于最短路径的两倍</li>
+<li>一棵含有n个节点的红黑树的高度之多为2log(n+1)</li>
+</ol>
+<p>在线演示：<a target="_blank" rel="noopener" href="https://pansong291.gitee.io/web/html/other/RedBlackTree.html">https://pansong291.gitee.io/web/html/other/RedBlackTree.html</a></p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e136ec79235c">https://www.jianshu.com/p/e136ec79235c</a></p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/tuyang1129/p/12556519.html">https://www.cnblogs.com/tuyang1129/p/12556519.html</a></p>
+<p><strong>B树</strong></p>
+<p><strong>B+树</strong></p>
+<p><strong>字典树</strong></p>
+<p>标准库实现 <code>无</code>，字典树又称前缀树，Trie树</p>
+<pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">TrieNode</span> &#123;
+    TrieNode[] children;
+    <span class="hljs-type">boolean</span> isEndOfWord;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">TrieNode</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-built_in">this</span>.children = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TrieNode</span>[<span class="hljs-number">26</span>];
+        <span class="hljs-built_in">this</span>.isEndOfWord = <span class="hljs-literal">false</span>;
+    &#125;
+&#125;</code></pre>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyTrie</span> &#123;
+    <span class="hljs-keyword">private</span> TrieNode root;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyTrie</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-built_in">this</span>.root = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TrieNode</span>();
+    &#125;
+
+    <span class="hljs-comment">//插入 O(k)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">insert</span><span class="hljs-params">(String word)</span>
+
+    <span class="hljs-comment">//查找 O(k)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">search</span><span class="hljs-params">(String word)</span> &#123; searchPrefix() &#125;
+
+    <span class="hljs-comment">//前缀匹配 O(k)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">startWith</span><span class="hljs-params">(String prefix)</span> &#123; searchPrefix() &#125;
+
+    <span class="hljs-comment">//查找节点</span>
+    <span class="hljs-keyword">private</span> TrieNode <span class="hljs-title function_">searchPrefix</span><span class="hljs-params">(String prefix)</span>
+&#125;</code></pre>
+
+<h1 id="堆-Heap"><a href="#堆-Heap" class="headerlink" title="堆 (Heap)"></a>堆 (Heap)</h1><p><strong>最小堆</strong></p>
+<p>标准库实现 <code>java.util.PriorityQueue</code></p>
+<pre><code class="hljs java"><span class="hljs-comment">//用数组实现的完全二叉树</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyMinHeap</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> size;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> capacity;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span>[] heap;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">MinHeap</span><span class="hljs-params">(<span class="hljs-type">int</span> initialCapacity)</span> &#123;
+        <span class="hljs-built_in">this</span>.size = size;
+        <span class="hljs-built_in">this</span>.capacity = initialCapacity;
+        <span class="hljs-built_in">this</span>.heap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[initialCapacity];
+    &#125;
+
+    <span class="hljs-comment">//向树中插入元素 O(logn)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span> &#123; heapifyUp() &#125;
+
+    <span class="hljs-comment">//获取树顶元素(最小值) O(logn)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">poll</span><span class="hljs-params">()</span> &#123; heapifyDown() &#125;
+
+    <span class="hljs-comment">//向上调整 O(logn)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">heapifyUp</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//向上调整 O(logn)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">heaapifyDown</span><span class="hljs-params">()</span>
+&#125;</code></pre>
+
+<p><strong>最大堆</strong></p>
+<h1 id="散列表-Hash-Table"><a href="#散列表-Hash-Table" class="headerlink" title="散列表 (Hash Table)"></a>散列表 (Hash Table)</h1><p>标准库实现 <code>java.util.HashMap</code></p>
+<pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Entry</span> &#123;
+    <span class="hljs-type">int</span> key;
+    <span class="hljs-type">int</span> value;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Entry</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> &#123;
+        <span class="hljs-built_in">this</span>.key = key;
+        <span class="hljs-built_in">this</span>.value = value;
+    &#125;
+&#125;</code></pre>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyHashMap</span> &#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">DEFAULT_CAPACITY</span> <span class="hljs-operator">=</span> <span class="hljs-number">16</span>;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">double</span> <span class="hljs-variable">LOAD_FACTOR</span> <span class="hljs-operator">=</span> <span class="hljs-number">0.75</span>;
+
+    <span class="hljs-keyword">private</span> LinkedList&lt;Entry&gt;[] table;
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> size;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyHashMap</span><span class="hljs-params">()</span> &#123;
+        table = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedList</span>[DEFAULT_CAPACITY];
+        size = <span class="hljs-number">0</span>;
+    &#125;
+
+    <span class="hljs-comment">//插入元素 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">put</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> &#123; resize(); &#125;
+
+    <span class="hljs-comment">//获取元素 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">get</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span>
+
+    <span class="hljs-comment">//移除元素 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">remove</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span> 
+
+    <span class="hljs-comment">//获取容量 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">size</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//扩容 O(1)?</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">resize</span><span class="hljs-params">()</span>
+
+    <span class="hljs-comment">//哈希值 O(1)</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-title function_">hash</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span>
+&#125;</code></pre>
+
+<ul>
+<li>HashMap使用数组和链表实现，综合了数据和链表的优点</li>
+<li>HashSet的底层实现原理也是HashMap，只不过value值存了一个相同的静态对象</li>
+</ul>
+<h1 id="图-Graph"><a href="#图-Graph" class="headerlink" title="图 (Graph)"></a>图 (Graph)</h1><p>标准库实现 <code>无</code>， 可以用 <code>Map&lt;Integer, Set&lt;Integer&gt;&gt;</code>代替</p>
+<p><strong>有向图</strong></p>
+<pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Vertex</span> &#123;
+    <span class="hljs-type">int</span> value;
+    List&lt;Vertex&gt; neighbors;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Vertex</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span> &#123;
+        <span class="hljs-built_in">this</span>.value = value;
+        <span class="hljs-built_in">this</span>.neighbors = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+    &#125;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addNeighbor</span><span class="hljs-params">(Vertex neighbor)</span> &#123;
+        neighbors.add(neighbor);
+    &#125;
+&#125;</code></pre>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyGraph</span> &#123;
+    List&lt;Vertex&gt; vertices;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">MyGraph</span><span class="hljs-params">()</span> &#123;
+        <span class="hljs-built_in">this</span>.vertices = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
+    &#125;
+
+    <span class="hljs-comment">//添加顶点 O(1)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addVertex</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span>
+
+    <span class="hljs-comment">//添加边 O(n)</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addEdge</span><span class="hljs-params">(<span class="hljs-type">int</span> from, <span class="hljs-type">int</span> to)</span> &#123; findVertex() &#125;
+
+    <span class="hljs-comment">//查找顶点 O(n)</span>
+    <span class="hljs-keyword">private</span> Vertex <span class="hljs-title function_">findVertex</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span>
+
+    <span class="hljs-comment">//打印图 O(n) ?</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">printGraph</span><span class="hljs-params">()</span>
+&#125;</code></pre>
+
+<ul>
+<li>有向图和无向图</li>
+<li>邻接表</li>
+<li>加权图</li>
+</ul>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/QLeelq/article/details/113694455">https://blog.csdn.net/QLeelq/article/details/113694455</a></p>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2023 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>

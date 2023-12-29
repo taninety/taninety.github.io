@@ -665,7 +665,16 @@ remoteService.transact(<span class="hljs-number">1</span>, <span class="hljs-key
 <li>android_util_Binder.cpp JavaBBinder.onTransact</li>
 <li>Binder execTransact, execTransactInternal, onTransact</li>
 </ul>
-<p>参考了链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/824db350dce6">https://www.jianshu.com/p/824db350dce6</a></p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/824db350dce6">https://www.jianshu.com/p/824db350dce6</a></p>
+<p>基本流程</p>
+<p>通信过程中涉及四个组件 Client, Service, Binder驱动, ServiceManager。Binder通信是枢纽，每个环节都需要</p>
+<ol>
+<li>Service在ServiceManager中注册服务</li>
+<li>Client从ServiceManager中获取服务地址</li>
+<li>Client通信使用服务地址调用Service</li>
+<li>Service返回数据给Client</li>
+</ol>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://bbs.huaweicloud.com/blogs/308646">https://bbs.huaweicloud.com/blogs/308646</a></p>
 <h1 id="View"><a href="#View" class="headerlink" title="View"></a>View</h1><h2 id="使用流程：使用控件，自定义控件"><a href="#使用流程：使用控件，自定义控件" class="headerlink" title="使用流程：使用控件，自定义控件"></a>使用流程：使用控件，自定义控件</h2><pre><code class="hljs kotlin"><span class="hljs-comment">//MyLinearLayout.kt</span>
 MyLinearLayout(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) &#123;
      <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">fun</span> <span class="hljs-title">onMeasure</span><span class="hljs-params">(widthMeasureSpec: <span class="hljs-type">Int</span>, heightMeasureSpec: <span class="hljs-type">Int</span>)</span></span> &#123;
@@ -1076,6 +1085,14 @@ locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, <span c
 <li>PendingIntent + Receiver</li>
 </ul>
 </li>
+</ul>
+<h1 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h1><h2 id="使用流程-10"><a href="#使用流程-10" class="headerlink" title="使用流程"></a>使用流程</h2><h2 id="运行流程：系统启动流程"><a href="#运行流程：系统启动流程" class="headerlink" title="运行流程：系统启动流程"></a>运行流程：系统启动流程</h2><ul>
+<li>Bootloader</li>
+<li>Kernel</li>
+<li>Init</li>
+<li>Zygote</li>
+<li>SystemServer</li>
+<li>ActivityThread</li>
 </ul>
 
             </div>
