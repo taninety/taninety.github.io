@@ -68,9 +68,21 @@
             </div>
             
             <div class="post-content">
-                <p>在解题的过程中，重要的是理解问题、选择合适的算法思想、实现和调试</p>
+                <ul>
+<li><a href="#%E6%95%B0%E7%BB%84%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2">数组与字符串</a></li>
+<li><a href="#%E9%93%BE%E8%A1%A8">链表</a></li>
+<li><a href="#%E6%A0%91">树</a></li>
+<li><a href="#%E6%90%9C%E7%B4%A2">搜索</a></li>
+<li><a href="#%E4%BD%8D%E8%BF%90%E7%AE%97">位运算</a></li>
+<li><a href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3">滑动窗口</a></li>
+<li><a href="#%E7%BB%8F%E5%85%B8%E6%80%9D%E6%83%B314%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95">经典思想(1&#x2F;4)：贪心算法</a></li>
+<li><a href="#%E7%BB%8F%E5%85%B8%E6%80%9D%E6%83%B324%E5%88%86%E6%B2%BB%E6%B3%95">经典思想(2&#x2F;4)：分治法</a></li>
+<li><a href="#%E7%BB%8F%E5%85%B8%E6%80%9D%E6%83%B334%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92">经典思想(3&#x2F;4)：动态规划</a></li>
+<li><a href="#%E7%BB%8F%E5%85%B8%E6%80%9D%E6%83%B344%E5%9B%9E%E6%BA%AF%E6%B3%95">经典思想(4&#x2F;4)：回溯法</a></li>
+</ul>
+<p>在解题的过程中，重要的是理解问题、选择合适的算法思想、实现和调试</p>
 <h1 id="数组与字符串"><a href="#数组与字符串" class="headerlink" title="数组与字符串"></a>数组与字符串</h1><p><strong>两数之和 (Two Sum)</strong></p>
-<p>要点：哈希映射</p>
+<p>要点：HashMap</p>
 <pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">int</span>[] twoSum(<span class="hljs-type">int</span>[] nums, <span class="hljs-type">int</span> target) &#123;
     Map&lt;Integer, Integer&gt; map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();
 
@@ -99,7 +111,7 @@
 </li>
 </ul>
 <p><strong>三数之和 (3Sum)</strong></p>
-<p>要点：双指针</p>
+<p>要点：<strong>双指针</strong></p>
 <pre><code class="hljs java"><span class="hljs-keyword">public</span> List&lt;List&lt;Integer&gt;&gt; <span class="hljs-title function_">threeSum</span><span class="hljs-params">(<span class="hljs-type">int</span>[] nums)</span> &#123;
     List&lt;List&lt;Integer&gt;&gt; result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();
 
@@ -230,7 +242,7 @@
 </li>
 </ul>
 <p><strong>两个数组的交集 (Intersection of Two Arrays)</strong></p>
-<p>要点：哈希集合</p>
+<p>要点：HashSet</p>
 <pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">int</span>[] intersection(<span class="hljs-type">int</span>[] nums1, <span class="hljs-type">int</span>[] nums2) &#123;
     Set&lt;Integer&gt; set1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();
     Set&lt;Integer&gt; resultSet = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();
@@ -280,40 +292,161 @@
     &#125;
 &#125;</code></pre>
 
-<h1 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h1><p><strong>反转链表</strong></p>
-<p><strong>合并两个有序链表</strong></p>
-<p><strong>删除链表中的倒数第N个节点</strong></p>
-<p><strong>检测环形链表</strong></p>
-<p><strong>合并K个排序链表</strong></p>
-<h1 id="树与图"><a href="#树与图" class="headerlink" title="树与图"></a>树与图</h1><p><strong>二叉树的遍历</strong></p>
-<p><strong>二叉树的最大深度</strong></p>
-<p><strong>验证二叉搜索树</strong></p>
-<p><strong>最小生成树算法</strong></p>
-<p><strong>拓扑排序</strong></p>
-<p><strong>最短路径算法</strong></p>
-<h1 id="排序与搜索"><a href="#排序与搜索" class="headerlink" title="排序与搜索"></a>排序与搜索</h1><p><strong>快速排序</strong></p>
-<p><strong>归并排序</strong></p>
-<p><strong>二分查找</strong></p>
-<p><strong>搜索旋转排序数组</strong></p>
-<p><strong>搜索插入位置</strong></p>
-<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><p><strong>爬楼梯</strong></p>
-<p><strong>最小路径和</strong></p>
-<p><strong>最小递增子序列</strong></p>
-<p><strong>编辑距离</strong></p>
-<p><strong>最大子序和</strong></p>
-<h1 id="贪心算法"><a href="#贪心算法" class="headerlink" title="贪心算法"></a>贪心算法</h1><p><strong>分发饼干</strong></p>
-<p><strong>跳跃游戏</strong></p>
-<p><strong>买卖股票的最佳时机</strong></p>
-<p><strong>划分字母区间</strong></p>
-<h1 id="回溯算法"><a href="#回溯算法" class="headerlink" title="回溯算法"></a>回溯算法</h1><p><strong>全排列</strong></p>
-<p><strong>组合总和</strong></p>
-<p><strong>N皇后问题</strong></p>
-<p><strong>解数独</strong></p>
-<h1 id="数学与位运算"><a href="#数学与位运算" class="headerlink" title="数学与位运算"></a>数学与位运算</h1><p><strong>Pow(x, n)</strong></p>
-<p><strong>整数反转</strong></p>
-<p><strong>罗马数字转整数</strong></p>
-<p><strong>两个整数之和</strong></p>
-<p><strong>缺失的第一个正数</strong></p>
+<p><strong>删除有序数组重复项</strong></p>
+<pre><code class="hljs java"></code></pre>
+
+<h1 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h1><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ListNode</span> &#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> val;
+    <span class="hljs-keyword">public</span> ListNode next;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-title function_">ListNode</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> &#123;
+        val = x;
+    &#125;
+&#125;</code></pre>
+
+<p><strong>反转链表（Reverse Linked List）</strong></p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> ListNode <span class="hljs-title function_">reverseList</span><span class="hljs-params">(ListNode head)</span> &#123;
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">prev</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">current</span> <span class="hljs-operator">=</span> head;
+
+    <span class="hljs-keyword">while</span> (current != <span class="hljs-literal">null</span>) &#123;
+        <span class="hljs-type">ListNode</span> <span class="hljs-variable">tmp</span> <span class="hljs-operator">=</span> current.next;
+        current.next = prev;
+        prev = current;
+        current = tmp;
+    &#125;
+    <span class="hljs-keyword">return</span> prev;
+&#125;</code></pre>
+
+<p><strong>合并两个有序链表（Merge Two Sorted Lists）</strong></p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> ListNode <span class="hljs-title function_">mergeTwoLists</span><span class="hljs-params">(ListNode l1, ListNode l2)</span> &#123;
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">dummy</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ListNode</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">current</span> <span class="hljs-operator">=</span> dummy;
+
+    <span class="hljs-keyword">while</span> (l1 != <span class="hljs-literal">null</span> &amp;&amp; l2 != <span class="hljs-literal">null</span>) &#123;
+        <span class="hljs-keyword">if</span> (l1.val &lt; l2.val&gt;) &#123;
+            current.next = l1;
+            l1 = l1.next;
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            current.next = l2;
+            l2 = l2.next;
+        &#125;
+        current = current.next;
+    &#125;
+
+    current.next = l1 != <span class="hljs-literal">null</span>? l1: l2;
+
+    <span class="hljs-keyword">return</span> dummy.next;
+&#125;</code></pre>
+
+<p><strong>删除链表中的倒数第N个节点（Remove Nth Node From End of List）</strong></p>
+<p>要点：快慢指针</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> ListNode <span class="hljs-title function_">removeNthNodeFromEnd</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">dummy</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ListNode</span>(<span class="hljs-number">0</span>);
+    dummy.next = head;
+
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">fast</span> <span class="hljs-operator">=</span> dummy;
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">slow</span> <span class="hljs-operator">=</span> dummy;
+
+    <span class="hljs-comment">//如果不确定边界，可以先按照最简单的方式处理，然后通过打印的结果来修改+1-1&lt;&lt;=等</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt;= n; i++) &#123;
+        fast = fast.next;
+    &#125;
+
+    <span class="hljs-keyword">while</span> (fast != <span class="hljs-literal">null</span>) &#123;
+        fast = fast.next;
+        slow = slow.next;
+    &#125;
+
+    slow.next = slow.next.next;
+    <span class="hljs-keyword">return</span> head; 
+&#125;</code></pre>
+
+<p><strong>检测环形链表（Linked List Cycle）</strong></p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">hasCycle</span><span class="hljs-params">(ListNode head)</span> &#123;
+    <span class="hljs-keyword">if</span> (head = <span class="hljs-literal">null</span> || head.next == <span class="hljs-literal">null</span>) &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    &#125;
+
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">slow</span> <span class="hljs-operator">=</span> head;
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">fast</span> <span class="hljs-operator">=</span> head.next;
+
+    <span class="hljs-keyword">while</span> (slow != fast) &#123;
+        <span class="hljs-keyword">if</span> (fast == <span class="hljs-literal">null</span> || fast.next == <span class="hljs-literal">null</span>) &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        &#125;
+
+        slow = slow.next;
+        fast = fast.next.next;
+    &#125;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+&#125;</code></pre>
+
+<p><strong>合并K个排序链表（Merge k Sorted Lists）</strong></p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> ListNode <span class="hljs-title function_">mergeKLists</span><span class="hljs-params">(ListNode[] lists)</span> &#123;
+    <span class="hljs-keyword">if</span> (lists == <span class="hljs-literal">null</span> || lists.length == <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+    &#125;
+
+    PriorityQueue&lt;ListNode&gt; pq = <span class="hljs-keyword">new</span> <span class="hljs-title class_">PriorityQueue</span>&lt;&gt;(Comparator.comparingInt(a -&gt; a.val));
+
+    <span class="hljs-keyword">for</span> (ListNode list : lists) &#123;
+        <span class="hljs-keyword">if</span> (list != <span class="hljs-literal">null</span>) &#123;
+            pq.offer(list);
+        &#125;
+    &#125;
+
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">dummy</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ListNode</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-type">ListNode</span> <span class="hljs-variable">current</span> <span class="hljs-operator">=</span> dummy;
+
+    <span class="hljs-keyword">while</span> (!pd.isEmpty()) &#123;
+        <span class="hljs-type">ListNode</span> <span class="hljs-variable">node</span> <span class="hljs-operator">=</span> pq.poll();
+        current.next = node;
+        current = current.next;
+
+        <span class="hljs-keyword">if</span> (node.next != <span class="hljs-literal">null</span>) &#123;
+            pq.offer(node.next);
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">return</span> dummy.next;
+&#125;</code></pre>
+
+<h1 id="树"><a href="#树" class="headerlink" title="树"></a>树</h1><p><strong>二叉树的最大深度（Maximum Depth of Binary Tree）</strong></p>
+<p><strong>验证二叉搜索树（Validate Binary Search Tree）</strong></p>
+<h1 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h1><p><strong>搜索旋转排序数组（Search in Rotated Sorted Array）</strong></p>
+<p><strong>搜索插入位置（Search Insert Position）</strong></p>
+<h1 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h1><p><strong>Pow(x, n)</strong></p>
+<p><strong>整数反转（Reverse Integer）</strong></p>
+<p><strong>罗马数字转整数（Roman to Integer）</strong></p>
+<p><strong>两个整数之和（Sum of Two Integers）</strong></p>
+<p><strong>缺失的第一个正数（First Missing Positive）</strong></p>
+<h1 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h1><p><strong>最小覆盖子串（Minimum Window Substring</strong></p>
+<h1 id="经典思想-1-4-：贪心算法"><a href="#经典思想-1-4-：贪心算法" class="headerlink" title="经典思想(1&#x2F;4)：贪心算法"></a>经典思想(1&#x2F;4)：贪心算法</h1><p><strong>哈夫曼编码</strong></p>
+<p><strong>分发饼干（Assign Cookies）</strong></p>
+<p><strong>跳跃游戏（Jump Game）</strong></p>
+<p><strong>买卖股票的最佳时机（Best Time to Buy and Sell Stock）</strong></p>
+<p><strong>划分字母区间（Partition Labels）</strong></p>
+<p>基本思路：</p>
+<p>其他：最小生成树算法</p>
+<h1 id="经典思想-2-4-：分治法"><a href="#经典思想-2-4-：分治法" class="headerlink" title="经典思想(2&#x2F;4)：分治法"></a>经典思想(2&#x2F;4)：分治法</h1><p>基本思路：(递归)</p>
+<p>其他：归并排序，快速排序</p>
+<h1 id="经典思想-3-4-：动态规划"><a href="#经典思想-3-4-：动态规划" class="headerlink" title="经典思想(3&#x2F;4)：动态规划"></a>经典思想(3&#x2F;4)：动态规划</h1><p><strong>最长公共子序列</strong></p>
+<p><strong>最短编辑距离</strong></p>
+<p><strong>0-1背包问题</strong></p>
+<p><strong>最长递增子序列（Longest Increasing Subsequence）</strong></p>
+<p><strong>斐波那契数列问题</strong></p>
+<p><strong>爬楼梯（Climbing Stairs）</strong></p>
+<p><strong>最小路径和（Minimum Path Sum）</strong></p>
+<p>基本思路：</p>
+<p>其他：最短路径问题，最大子序和（Maximum Subarray）</p>
+<h1 id="经典思想-4-4-：回溯法"><a href="#经典思想-4-4-：回溯法" class="headerlink" title="经典思想(4&#x2F;4)：回溯法"></a>经典思想(4&#x2F;4)：回溯法</h1><p><strong>N皇后问题（N-Queens）</strong></p>
+<p><strong>全排列（Permutations）</strong></p>
+<p><strong>组合总和（Combination Sum）</strong></p>
+<p><strong>解数独（Sudoku Solver）</strong></p>
+<p><strong>旅行商问题</strong></p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1882027">https://cloud.tencent.com/developer/article/1882027</a></p>
 
             </div>
         </div>
@@ -338,7 +471,7 @@
         <div class="footer-meta">
             
                 <div class="footer-meta-copyright">
-                    &copy; 2023 taninety.
+                    &copy; 2024 taninety.
                 </div>
             
             

@@ -68,7 +68,25 @@
             </div>
             
             <div class="post-content">
-                <p>代码版本 API33 &#x2F; Android 13</p>
+                <ul>
+<li><a href="#activity">Activity</a></li>
+<li><a href="#fragment">Fragment</a></li>
+<li><a href="#service">Service</a></li>
+<li><a href="#broadcast-receiver">Broadcast Receiver</a></li>
+<li><a href="#content-provider">Content Provider</a></li>
+<li><a href="#handler">Handler</a></li>
+<li><a href="#binder">Binder</a></li>
+<li><a href="#view">View</a></li>
+<li><a href="#motionevent">MotionEvent</a></li>
+<li><a href="#listview">ListView</a></li>
+<li><a href="#recyclerview">RecyclerView</a></li>
+<li><a href="#kotlin-coroutine">Kotlin Coroutine</a></li>
+<li><a href="#camera">Camera</a></li>
+<li><a href="#location">Location</a></li>
+<li><a href="#%E6%A6%82%E5%BF%B5%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90">概念原理解析</a></li>
+<li><a href="#%E4%B8%AA%E4%BA%BA%E7%96%91%E9%97%AE%E6%95%B4%E7%90%86">个人疑问整理</a></li>
+</ul>
+<p>代码版本 API33 &#x2F; Android 13</p>
 <h1 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h1><h2 id="使用流程"><a href="#使用流程" class="headerlink" title="使用流程"></a>使用流程</h2><pre><code class="hljs kotlin"><span class="hljs-keyword">val</span> intent = Intent(<span class="hljs-keyword">this</span>, NewActivity::<span class="hljs-keyword">class</span>.java)
 intent.putExtra(<span class="hljs-string">&quot;key&quot;</span>, value)
 startActivity(intent)</code></pre>
@@ -1086,7 +1104,8 @@ locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, <span c
 </ul>
 </li>
 </ul>
-<h1 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h1><h2 id="使用流程-10"><a href="#使用流程-10" class="headerlink" title="使用流程"></a>使用流程</h2><h2 id="运行流程：系统启动流程"><a href="#运行流程：系统启动流程" class="headerlink" title="运行流程：系统启动流程"></a>运行流程：系统启动流程</h2><ul>
+<h1 id="概念原理解析"><a href="#概念原理解析" class="headerlink" title="概念原理解析"></a>概念原理解析</h1><p><strong>系统启动流程</strong></p>
+<ul>
 <li>Bootloader</li>
 <li>Kernel</li>
 <li>Init</li>
@@ -1094,6 +1113,187 @@ locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, <span c
 <li>SystemServer</li>
 <li>ActivityThread</li>
 </ul>
+<p><strong>Android的系统层次</strong></p>
+<ul>
+<li>应用层 (Application Layer)</li>
+<li>Android框架层 (Android Framework)<ul>
+<li>Android系统API和服务</li>
+</ul>
+</li>
+<li>Android Runtime (ART&#x2F;Dalvik虚拟机)<ul>
+<li>4.4及之前 Dalvik虚拟机</li>
+<li>5.0及之后 ART虚拟机</li>
+</ul>
+</li>
+<li>系统运行库 (Native Libraries)<ul>
+<li>so库</li>
+</ul>
+</li>
+<li>硬件抽象层 (Hardware Abstraction Layer, HAL)<ul>
+<li>为上层提供硬件访问的抽象接口，使得Android上层代码不许关心具体硬件实现</li>
+</ul>
+</li>
+<li>内核层 (Kernel Layer)<ul>
+<li>进程管理，内存管理，设备驱动程序，网络管理</li>
+</ul>
+</li>
+<li>硬件层 (Hardware Layer)</li>
+</ul>
+<p><strong>热修复原理</strong></p>
+<ol>
+<li>Adroid虚拟机加载 Dalvik&#x2F;ART 加载类的dex文件</li>
+<li>加载类需要ClassLoader</li>
+<li>子类BaseDexClassLoader下有一个数组 DexPathList，用来存放dex文件</li>
+<li>BaseDexClassLoader调用findClass实际是遍历数组，找到第一个需要的dex就return</li>
+<li>热修复解决方法是将新的dex添加到该集合中，旧的dex前面</li>
+</ol>
+<p><strong>插件化原理</strong></p>
+<p><strong>Activity启动过程</strong></p>
+<ol>
+<li>点击Laucher图标，通过PackagerService解析对应应用AndroidManifest.xml得到应用程序相关信息</li>
+<li>系统调用startActivtySafely -&gt; startActivity -&gt; startActivityForResult</li>
+<li>Instrumenation执行exeStartActivity方法，Instrumenation类作用是监控程序和系统间的交互</li>
+<li>获取ActivityManagerService的代理对象，执行checkStartActivityResult。如果配置清单没有配置这个组件，会抛异常</li>
+<li>调用Application.sheculeLaunchActivity获取ActivityClientRecord对象。系统内部将每个activity组件使用ActivityClientRecord描述，ActivityClientRecord中保存一个LoaderApk对象</li>
+<li>通过LoaderApk调用handleLaunchActivity启动activity，执行生命周期方法</li>
+</ol>
+<p><strong>HttpClient、HttpUrlConnection 区别</strong></p>
+<p>&#x2F;&#x2F;中高级专题</p>
+<p><strong>悲观锁、乐观锁区别</strong></p>
+<ul>
+<li>悲观锁<ul>
+<li>每次拿数据都会上锁</li>
+<li>使用于多写情况</li>
+<li>实现方式：synchronized, re-entrant-lock</li>
+</ul>
+</li>
+<li>乐观锁<ul>
+<li>更新的时候判断一下再此期间有没有修改</li>
+<li>适用于多读少写的情况，提高吞吐量</li>
+<li>实现方式<ul>
+<li>版本号机制：数据表加上版本号字段，表示数据被修改的次数。更新数据时，读取的同时读取version值，提交更新时，比较刚才读取的version值和现在的值，相同才更新。</li>
+<li>CAS算法：compare and swap 无锁算法<ul>
+<li>在不适用锁的情况下实现多线程间变量同步，无阻塞同步<ul>
+<li>需要读写的内存值V，当前值</li>
+<li>进行比较的值A，刚进来时的值</li>
+<li>要写入的值B</li>
+<li>比较V和A，如果相同，用B更新V，否则不和执行任何（比较和替换是原子操作）<ul>
+<li>自旋操作。持续检查条件，不进行实际的阻塞，避免线程切换的开销<pre><code class="hljs plaintext">while(!conditionIsMet) &#123;
+    //条件不满足继续自旋
+&#125;
+
+//条件满足后，继续执行后序操作
+performSomeTask()</code></pre></li>
+<li>java atomicStampedReference</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>可能存在的问题<ul>
+<li>ABA问题，可能改完又改回来了</li>
+<li>自旋循环时间长，导致CPU开销大</li>
+<li>只能针对一个共享变量操作</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="个人疑问整理"><a href="#个人疑问整理" class="headerlink" title="个人疑问整理"></a>个人疑问整理</h1><p><strong>UI点击事件是怎么回调到主线程执行的，主线程不是在阻塞中吗</strong></p>
+<p>点击屏幕到输入事件传到app之间发生了什么</p>
+<ul>
+<li>用户点击屏幕<ul>
+<li>触摸屏硬件由一系列传感器检测到触摸的位置、压力等信息</li>
+</ul>
+</li>
+<li>底层驱动程序产生事件，包括事件类型，触摸位置，时间戳<ul>
+<li>触摸信息传递到Linux内核，在内核层触摸事件被表示成输入事件</li>
+<li>Linux内核的输入子系统，将触摸事件封装成输入事件结构体</li>
+<li>输入子系统将输入事件传递给设备文件 &#x2F;dev&#x2F;input&#x2F;eventX，X是输入设备编号，每个输入设备都有一个对应的设备文件</li>
+</ul>
+</li>
+<li>Android系统的系统服务 &#x2F;system&#x2F;bin&#x2F;inputflinger 负责监听所有的输入事件</li>
+<li>InputDispatcher将底层输入事件传递到目标应用程序的相应窗口<ul>
+<li>对接收到的输入事件进行预处理，包括去抖动、合并、排序等</li>
+<li>通过系统服务获取窗口管理器WindowManager引用，查找到目标窗口</li>
+<li>通过InputChannel与目标窗口通信<ul>
+<li>InputChannel是在不同进程之间传递输入事件的IPC机制</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>事件传递到目标窗口，mPhoneWindow -&gt; decorView -&gt; rootView<ul>
+<li>应用程序进程中InputReader，通过Binder接收到跨进程通信</li>
+<li>ViewRootImpl第一个接收到事件</li>
+</ul>
+</li>
+<li>事件传递流程 dispatchTouchEvent -&gt; onInterceptTouchEvent -&gt; onTouchEvent</li>
+<li>触发回调方法</li>
+</ul>
+<p>应用端是通过什么组件接收WindowManagerServer传来的输入事件的<br>Binder通信，应用以binder子线程接收到WMS的通信，通过handler切换到主线程发起事件回调</p>
+<p>这个文章里的总结 <a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904069853609997">https://juejin.cn/post/6844904069853609997</a></p>
+<p>服务端</p>
+<ul>
+<li>system_server启动时包含一个InputManagerServer服务，IMS启动过程中启动两个线程<ul>
+<li>事件读取线程 InputReaderThread</li>
+<li>事件派发线程 InputDispatcherThread</li>
+<li>IMS持有native NativeInputManager，NativeInputManager持有native InputManager</li>
+<li>InputManager包含InputDispatcher和InputReader</li>
+<li>InputReader持有EventHub</li>
+</ul>
+</li>
+<li>EventHub使用epoll系统调用监控inotify和设备文件FD的可读事件，当某个设备可读，从epoll_wait返回，读出有数据的设备生事件，并给InputReader<ul>
+<li>EventHub管理输入设备和读取输入事件</li>
+</ul>
+</li>
+<li>InputReader有一个InputReaderThread 轮询EventHub获取事件。InputReader以InputListenerInterface形式 持有InputDispatcher，notifyMotion方法将熟事件交给InputDispatcher<ul>
+<li>将生事件加工成熟事件，比如，将一组触摸屏的原始事件合并成一个ACTION_DOWN事件</li>
+<li>将事件加入到队列mInboundQueue并唤醒InputDispatcherThread</li>
+</ul>
+</li>
+<li>InputDispatcherThread被唤醒后调用InputDispatcher开始派发事件<ul>
+<li>InputDispatcher通过WMS找到当前的window，根据window找到之前建立的Connection，将事件加到Connection的outboundQueue，从队头取一个消息，调用Connection Inputlisher发送事件，最终调用InputChanner，InputChannel用自己保存的FD调用socketpair的sendMsg将事件发出去</li>
+<li>发送事件之后将消息记录在Connection waitQueue队尾，InputDispatcherThread再次等待在Looper上，等收到app finish事件后，再根据事件序列号找到事件并且移除，并继续派发属于这个Connection的消息</li>
+<li>服务端对于当前正在派发事件的窗口，收到反馈再发下一个，如果没收到反馈，不会发下一个</li>
+<li>如果用户按HOME键，或者触发了目标是其他窗口的事件，InputDispatcher发现当前窗口正在等待上一个事件反馈，会将排在当前窗口的所有事件丢弃，然后把新事件发给对应目标</li>
+</ul>
+</li>
+</ul>
+<p>App端</p>
+<ul>
+<li>app窗口在调用WMS addWindow时，WMS为App窗口建立一对InputChannel<ul>
+<li>InputChannel基于socketpair，两端对等，没有server和client之分</li>
+<li>WMS将服务进程的InputChannel注册到InputDispatcher，用于给窗口发送接收事件</li>
+</ul>
+</li>
+<li>App进程将InputChannel的scoketpair FD加入到main looper的FD监听列表<ul>
+<li>所以收到事件，事件的处理会直接发生在主线程</li>
+</ul>
+</li>
+<li>mainlloper监听到FD上有数据，回调FD绑定的回调函数，回调函数将事件封装成对应的Event对象</li>
+<li>通过责任链形式分发 ViewRootImpl -&gt; DecorView -&gt; Activity -&gt; View(DecorView) -&gt; DecorView的子View<ul>
+<li>ViewRootImpl的WindowInputEventReceiver</li>
+</ul>
+</li>
+<li>如果App进程没有消费事件，发给InputDispacher的finish事件标记handled为false</li>
+</ul>
+<p>疑问：当View重叠的时候，会把事件分发给谁</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903972449288199">https://juejin.cn/post/6844903972449288199</a></p>
+<p>Activity dispatchTouchEvent方法的调用栈</p>
+<ul>
+<li>Thread.dumpStack<ul>
+<li>发现可以通过在特定方法调用**Thread.dumpStack()**方法来看系统的调用流程</li>
+</ul>
+</li>
+<li>MainActivity.dispatchTouchEvent</li>
+<li>androidx.appcompact.view.WindowCallbackWrapper.dispatchTouchEvent</li>
+<li>com.android.internal.policy.DecorView.dispatchTouchEvent</li>
+<li>android.view.View.dispatchPointerEvent</li>
+</ul>
+<p>&#x2F;&#x2F;TODO</p>
 
             </div>
         </div>
@@ -1118,7 +1318,7 @@ locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, <span c
         <div class="footer-meta">
             
                 <div class="footer-meta-copyright">
-                    &copy; 2023 taninety.
+                    &copy; 2024 taninety.
                 </div>
             
             
