@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            Java 面试题目 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>Java 面试题目</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2024/01/04</span>
+            </div>
+            
+            <div class="post-content">
+                <h1 id="面试题收集"><a href="#面试题收集" class="headerlink" title="面试题收集"></a>面试题收集</h1><h2 id="、equals、hashCode-区别"><a href="#、equals、hashCode-区别" class="headerlink" title="&#x3D;&#x3D;、equals、hashCode 区别"></a>&#x3D;&#x3D;、equals、hashCode 区别</h2><ul>
+<li>&#x3D;&#x3D; <ul>
+<li>基本类型：比较数值是否相等</li>
+<li>引用：比较引用变量是否相等，即比较指向的内存地址是否相等</li>
+</ul>
+</li>
+<li>equals<ul>
+<li>Object类默认实现：和&#x3D;&#x3D;一致</li>
+<li>很多类实现了该方法，比较的是对象内存中的内容</li>
+<li>可重写</li>
+</ul>
+</li>
+<li>hashCode<ul>
+<li>Object类默认实现：根据对象的内存地址计算</li>
+<li>可重写，实践中equals和hashCode最好同时重写。因为相等的对象应该有相等的哈希码</li>
+</ul>
+</li>
+</ul>
+<h2 id="String、StringBuffer、StringBuilder-区别"><a href="#String、StringBuffer、StringBuilder-区别" class="headerlink" title="String、StringBuffer、StringBuilder 区别"></a>String、StringBuffer、StringBuilder 区别</h2><ul>
+<li>String<ul>
+<li>常量</li>
+<li>对String对象的操作实际上一个不断创建新对象，将旧对象回收的过程</li>
+</ul>
+</li>
+<li>StringBuilder<ul>
+<li>变量</li>
+<li>线程不安全</li>
+</ul>
+</li>
+<li>StringBuffer<ul>
+<li>变量</li>
+<li>线程安全</li>
+</ul>
+</li>
+</ul>
+<h2 id="final、finally、finalize-区别"><a href="#final、finally、finalize-区别" class="headerlink" title="final、finally、finalize 区别"></a>final、finally、finalize 区别</h2><ul>
+<li>final<ul>
+<li>修饰类，不可继承</li>
+<li>修饰成员变量，不可变</li>
+<li>修饰成员方法，不可重写</li>
+</ul>
+</li>
+<li>finally<ul>
+<li>与try catch共同使用，确保无论是否出现异常都执行</li>
+</ul>
+</li>
+<li>finalize<ul>
+<li>Object类的方法，默认空实现，对象被垃圾回收前会调用此方法</li>
+<li>可重写</li>
+</ul>
+</li>
+</ul>
+<h2 id="Serializable、Parcelable-区别"><a href="#Serializable、Parcelable-区别" class="headerlink" title="Serializable、Parcelable 区别"></a>Serializable、Parcelable 区别</h2><ul>
+<li>Serializable<ul>
+<li>java 序列化接口</li>
+<li>读写中有大量临时变量，执行大量IO操作，效率低</li>
+<li>对象可存储在硬盘</li>
+</ul>
+</li>
+<li>Parcelable<ul>
+<li>Android 序列化接口</li>
+<li>效率高，但是用麻烦</li>
+<li>对象不能存储在硬盘，只能用于内存中传递</li>
+</ul>
+</li>
+</ul>
+<h2 id="线程-run、start-区别"><a href="#线程-run、start-区别" class="headerlink" title="线程 run、start 区别"></a>线程 run、start 区别</h2><ul>
+<li>run<ul>
+<li>直接调用run，没开启小城</li>
+</ul>
+</li>
+<li>start<ul>
+<li>启动线程，内部调用了run</li>
+</ul>
+</li>
+</ul>
+<h2 id="wait、notify、notifyAll、join-区别"><a href="#wait、notify、notifyAll、join-区别" class="headerlink" title="wait、notify、notifyAll、join 区别"></a>wait、notify、notifyAll、join 区别</h2><ul>
+<li>wait<ul>
+<li>Object类的方法</li>
+<li>使当前线程等待，释放对象的锁</li>
+</ul>
+</li>
+<li>notify<ul>
+<li>Object类的方法</li>
+<li>唤醒之前在该对象上调用wait等待的线程</li>
+</ul>
+</li>
+<li>notifyAll<ul>
+<li>Object类的方法</li>
+<li>唤醒之前所有在该对象上调用wait等待的线程</li>
+</ul>
+</li>
+<li>join<ul>
+<li>Thread类的方法</li>
+<li>等待该线程对象的结束，运行这行代码的线程进入等待状态</li>
+</ul>
+</li>
+</ul>
+<h2 id="synchronized关键字用法，对象锁、方法锁、类锁-区别"><a href="#synchronized关键字用法，对象锁、方法锁、类锁-区别" class="headerlink" title="synchronized关键字用法，对象锁、方法锁、类锁 区别"></a>synchronized关键字用法，对象锁、方法锁、类锁 区别</h2><p>对象锁</p>
+<ul>
+<li><p>在方法上使用</p>
+  <pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-comment">//对象锁，锁定的是这个对象实例</span>
+    <span class="hljs-comment">//多个线程调用同一个对象的同步方法会阻塞</span>
+    <span class="hljs-comment">//调用不同对象的同步方法不会阻塞</span>
+&#125;
+
+<span class="hljs-comment">//等价于代码块上使用</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-keyword">synchronized</span>(<span class="hljs-built_in">this</span>) &#123;
+
+    &#125;
+&#125;</code></pre>
+</li>
+<li><p>在代码块上使用</p>
+  <pre><code class="hljs java"><span class="hljs-comment">//lock对象需要放在方法外，如果放在方法内，每次调用都是不同的对象，不会有效果</span>
+<span class="hljs-keyword">private</span> <span class="hljs-type">Object</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>(); 
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-keyword">synchronized</span>(lock) &#123;
+        <span class="hljs-comment">//锁定的是lock对象</span>
+        <span class="hljs-comment">//只有一个线程能获得lock对象</span>
+    &#125;
+&#125;</code></pre></li>
+</ul>
+<p>类锁</p>
+<ul>
+<li>在静态方法上使用<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">()</span> &#123;
+
+&#125;
+
+<span class="hljs-comment">//等价于代码块上使用</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-keyword">synchronized</span>(test.class) &#123;
+        <span class="hljs-comment">//所有的类只有一个class对象</span>
+    &#125;
+&#125;</code></pre></li>
+</ul>
+<p>多线程同时分别访问类锁和静态锁，线程不会阻塞</p>
+<h2 id="synchronized、volatile、reentrantlock-区别"><a href="#synchronized、volatile、reentrantlock-区别" class="headerlink" title="synchronized、volatile、reentrantlock 区别"></a>synchronized、volatile、reentrantlock 区别</h2><ul>
+<li>synchronize<ul>
+<li>可以修饰方法和代码块(代码块里是对象变量或者类对象)</li>
+<li>本质是锁定当前变量，只有当前线程可以方法，其他线程会被阻塞</li>
+<li>既能保证可见性，又能保证原子性</li>
+</ul>
+</li>
+<li>volatile<ul>
+<li>仅能修饰变量</li>
+<li>本质是告诉JVM，当前变量在工作内存中的值是不确定的，需要从主存中读取</li>
+<li>防止编译器优化</li>
+<li>仅能保证可见性，不能保证原子性</li>
+</ul>
+</li>
+<li>reentrantlock<ul>
+<li>可重入锁，允许同一个线程多次获取同一把锁，而不会产生死锁。如果一个线程获得锁之后，可再次进入同步代码块，不会被阻塞。</li>
+<li>比如递归时使用</li>
+<li>获取锁和释放锁需要显式调用<pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-type">Lock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>();
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method</span><span class="hljs-params">()</span> &#123;
+    lock.lock();
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-comment">//同一线程重复获取同一把锁，不会死锁</span>
+        innerMethod()
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        lock.unlock();
+    &#125;
+&#125;
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">innerMethod</span><span class="hljs-params">()</span> &#123;
+    lock.lock();
+    <span class="hljs-keyword">try</span> &#123;
+        <span class="hljs-comment">//</span>
+    &#125; <span class="hljs-keyword">finally</span> &#123;
+        lock.unlock();
+    &#125;
+&#125;</code></pre></li>
+</ul>
+</li>
+</ul>
+<h2 id="多态的理解"><a href="#多态的理解" class="headerlink" title="多态的理解"></a>多态的理解</h2><ul>
+<li>编译时多态<ul>
+<li>方法的重载，方法重名，编译器根据参数类型，个数，顺序判断是哪个方法</li>
+</ul>
+</li>
+<li>运行时多态<ul>
+<li>子类重写父类的方法，具有相同的签名</li>
+<li>运行时由对象的实际类型决定，而不是引用变量的类型。动态绑定<ul>
+<li>引用变量的类型：编译时类型</li>
+<li>对象实际类型：运行时类型</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2024 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>

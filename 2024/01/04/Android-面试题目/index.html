@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon" />
+    <title>
+        
+            Android 面试题目 |
+         
+        编舟
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/css/solid.min.css">
+
+     
+    
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXXXX"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXXXX');
+        </script>
+    
+
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+    <div class="body-container">
+        <div class="header-wrapper"><header>
+    <div class="header-container">
+        <div class="header-menu-list">
+            <ul>
+            
+                <li>
+                    <a href="/">Home</a>
+                </li>
+            
+                <li>
+                    <a href="/about">About</a>
+                </li>
+            
+            </ul>
+        </div>
+    </div>
+</header>
+</div>
+        <div class="main-wrapper"><main>
+    <div class="main-container">
+        <div class="post-details">
+            
+            <div class="post-title">
+                <h1>Android 面试题目</h1>
+            </div>
+            <div class="post-meta">
+                <i class="fa-solid fa-clock"></i>&nbsp;<span class="post-date">2024/01/04</span>
+            </div>
+            
+            <div class="post-content">
+                <h1 id="面试题收集"><a href="#面试题收集" class="headerlink" title="面试题收集"></a>面试题收集</h1><h2 id="Activity生命周期"><a href="#Activity生命周期" class="headerlink" title="Activity生命周期"></a>Activity生命周期</h2><p>标准流程：onCreate -&gt; onStart -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onDestroy</p>
+<p>更细致的：onCreate -&gt; onRestart -&gt; onStart -&gt; onRestoreInstanceState -&gt; onResume -&gt; onPause -&gt; onStop -&gt; onSaveInstanceState -&gt; onDestory</p>
+<ul>
+<li>onRestart：上一次onStop之后，未被onDestory的情况下，再次打开页面时会调用onRestart</li>
+<li>onRestoreInstanceState：上一次onDestory是<strong>系统未经用户允许</strong>的情况下执行的，再次打开页面会调用onRestoreInstanceState</li>
+<li>onSaveInstanceState：用户的操作使Activity执行onStop之后，不需要onDestory时，会执行onSaveInstanceState，比如熄屏，HOME键，切到其他Activity</li>
+<li>启动另一个Activity时，是先onPause当前Activity，然后另一个Activity执行完整的流程 onCreate &gt; onStart &gt; onResume 之后，再对当前Activity 执行 onStop &gt; onDestroy</li>
+</ul>
+<h2 id="Service生命周期"><a href="#Service生命周期" class="headerlink" title="Service生命周期"></a>Service生命周期</h2><p>startService: onCreate &gt; onStartCommand -&gt; onDestroy，如果重复执行startService，后续只会调用 onStartCommand</p>
+<p>bindService: onCreate -&gt; onBind -&gt; unBind -&gt; onDestroy，如果重复执行bindService，不会再次调用生命周期，除非指定不同的intent type</p>
+<h2 id="Activity-启动过程"><a href="#Activity-启动过程" class="headerlink" title="Activity 启动过程"></a>Activity 启动过程</h2><ul>
+<li>启动Activity本质上是执行Activity startActivity方法，最终走的都是startActivityForResult这个方法</li>
+<li>执行Instrumentation类execStartActivity方法，这个类是用来监控程序和系统之间的交互</li>
+<li>获取ActivityTaskManagerService代理对象，通过代理对象执行<strong>Binder</strong>远程调用system_server进程中的ATMS</li>
+<li>ATMS判断是否需要开启新的app进程<ul>
+<li>如果需要的话，将任务转交给ActivityManagerService，调用 startProcess方法</li>
+<li>AMS通过<strong>Socket</strong>连接Zygote进程</li>
+<li>Zygote进程收到消息，从阻塞中唤醒，通过<strong>native fork</strong>方法，复制新的app进程</li>
+<li>在这个进程中通过<strong>反射</strong>调用ActivityThread main方法</li>
+<li>main方法进行一系列的初始化，比如Looper，Handler相关的初始化，还有调用attach方法</li>
+<li>attach方法中获取到AMS的代理对象，<strong>Binder</strong>远程调用AMS的attachApplication方法</li>
+<li>AMS将任务转交给ATMS，ATMS调用realStartActivityLocked</li>
+<li>然后进入了和刚才判断是否需要新进程时，不需要开启新进程一样的路径</li>
+</ul>
+</li>
+<li>ATMS调用realStartActivityLocked，通过ClientLifeCycleManager调用scheduleTransaction</li>
+<li>获取代理对象，通过<strong>Binder</strong>远程调用app进程中的scheduleTransaction</li>
+<li>通过<strong>Handler</strong>发送消息，切换到ActivityThread主线程，调用LaunchActivityItem execute方法</li>
+<li>调用ClientTransactionHandler的handleLaunchActivty方法，performCreate方法</li>
+<li>调用Instrumentation类callACtivityOnCreate</li>
+<li>最终调用Activity onCreate，执行Activity的生命周期</li>
+</ul>
+<h2 id="Broadcast注册方式"><a href="#Broadcast注册方式" class="headerlink" title="Broadcast注册方式"></a>Broadcast注册方式</h2><p>静态注册：在AndroidManifest中进行注册，不受页面生命周期影响，常驻型广播，会占用CPU资源</p>
+<p>动态注册：代码里注册的，退出生命周期时需要解绑，否则会内存泄露</p>
+<p>广播包括：有序广播，无序广播，还有本地广播</p>
+<h2 id="HttpClient与HttpUrlConnection区别"><a href="#HttpClient与HttpUrlConnection区别" class="headerlink" title="HttpClient与HttpUrlConnection区别"></a>HttpClient与HttpUrlConnection区别</h2><p>Volley 在2.3前用HttpClient，2.3后用HttpUrlConnection</p>
+<p>共同点：以流的形式进行数据传输，支持ipv6，连接池功能</p>
+<p>不同点</p>
+<ul>
+<li>HttpClient拥有非常多API，很难扩展，Android 6.0时弃用了</li>
+<li>HttpUrlCoonnection相对比较轻量级，容易扩展，满足Android大部分数据传输</li>
+</ul>
+<h2 id="Java虚拟机和Dalvik虚拟机区别"><a href="#Java虚拟机和Dalvik虚拟机区别" class="headerlink" title="Java虚拟机和Dalvik虚拟机区别?"></a>Java虚拟机和Dalvik虚拟机区别?</h2><p>Java虚拟机：</p>
+<h2 id="进程保活"><a href="#进程保活" class="headerlink" title="进程保活"></a>进程保活</h2><p>黑色保活：不同app进程利用广播唤醒，包括利用系统提供的广播唤醒</p>
+<ul>
+<li>开机，网络切换，拍照时候系统产生的广播唤醒app</li>
+<li>三方SDK唤醒相应的app进程，微信sdk唤醒微信</li>
+<li>阿里系的app互相唤醒</li>
+</ul>
+<p>白色保活：启动前台Service</p>
+<ul>
+<li>调用系统api启动前台Service进程，会在系统通知栏生成Notification，比如音乐播放软件</li>
+</ul>
+<p>灰色保活：利用系统的漏洞启动前台Service</p>
+<ul>
+<li>启动前台Service进程，但是不在系统通知栏出现Notification<ul>
+<li>API&lt;18，启动前台Service时直接传入 new Notification()</li>
+<li>API&gt;18，同时启动两个id相同的前台Service，然后再将后启动的Service stop掉</li>
+</ul>
+</li>
+</ul>
+<p>相关概念</p>
+<ul>
+<li>Low Memory Killer：APP退到后台时，系统不会杀掉这个进程，而是缓存起来。当系统内存不足的时候，根据进程优先级来杀进程</li>
+<li>进程优先级：前台进程 &gt; 可见进程 &gt; 服务进程 &gt; 后台进程 &gt; 空进程</li>
+</ul>
+<h2 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h2><p>Context是一个抽象基类，提供程序的运行环境基础信息。Context数量 &#x3D; Activity数量 + Service数量 + 1 (Application)</p>
+<ul>
+<li>ContextWrapper 上下文功能的封装类<ul>
+<li>ContextThemeWrapper 带主题的封装类<ul>
+<li>Activity 只有它支持启动Activity，弹出Dialog</li>
+</ul>
+</li>
+<li>Service</li>
+<li>Application</li>
+</ul>
+</li>
+<li>ContextImpl 上下功能的实现类</li>
+</ul>
+<h2 id="Activity、View、Window三者关系"><a href="#Activity、View、Window三者关系" class="headerlink" title="Activity、View、Window三者关系"></a>Activity、View、Window三者关系</h2><ul>
+<li>Activity构造的时候会初始化一个Window，即PhoneWindow，每个</li>
+<li>PhoneWindow有一个</li>
+</ul>
+
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://utteranc.es/client.js"
+    repo="owner/repo"
+    issue-term="pathname"
+    theme="github-light"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+  
+
+</div>
+        <div class="footer-wrapper"><footer>
+    <div class="footer-container">
+        <div class="footer-meta">
+            
+                <div class="footer-meta-copyright">
+                    &copy; 2024 taninety.
+                </div>
+            
+            
+                <div class="footer-meta-licenese">
+                    Licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+                </div>
+            
+            
+                <div class="footer-meta-rss">
+                    <a href="/atom.xml"><i class="fa-solid fa-rss"></i></a>
+                </div>
+            
+        </div>
+    </div>
+</footer>
+</div>
+    </div>
+</body>
+</html>
