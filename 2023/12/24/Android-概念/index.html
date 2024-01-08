@@ -878,7 +878,152 @@ recyclerView.adapter = Adapter(<span class="hljs-keyword">data</span>)</code></p
 <li>Dispatchs.Default 子线程，CPU密集工作</li>
 <li>Dispatchers.Unconfined 从当前线程直接执行</li>
 </ul>
-<h2 id="运行流程-9"><a href="#运行流程-9" class="headerlink" title="运行流程"></a>运行流程</h2><h1 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h1><h2 id="使用流程-8"><a href="#使用流程-8" class="headerlink" title="使用流程"></a>使用流程</h2><p><strong>Camera1接口</strong></p>
+<h2 id="运行流程-9"><a href="#运行流程-9" class="headerlink" title="运行流程"></a>运行流程</h2><p>协程的实质</p>
+<ul>
+<li>协程像是轻量级的线程<ul>
+<li>协程本质也是线程实现的，但是</li>
+<li>操作系统并不支持协程的存在，它只知道线程。线程调用阻塞IO操作的时候，操作系统会让线程进入阻塞状态，绑定在当前线程的协程都会陷入阻塞。</li>
+<li>所以协程只能和异步IO结合，对阻塞IO，和计算密集型任务都起不到好效果</li>
+<li>阻塞型IO有哪些：打印，读取文件，Socket接口</li>
+</ul>
+</li>
+</ul>
+<p>比如新开了一个线程，发起了异步IO网络请求，</p>
+<p>协程调度器</p>
+<ul>
+<li>也是在用线程池管理</li>
+</ul>
+<p>OkHttp使用Okio的I&#x2F;O操作库。</p>
+<p>其实协程的本质是把回调的写法，改成同步的写法了。但是效果一样</p>
+<p>比如我在主线程执行一组网络操作<br>不使用协程的时候</p>
+<ul>
+<li>操作1 { 完成后回调， }</li>
+</ul>
+<p>协程主要的好处是简化异步编程，提高可读性和维护性。但本质就是异步</p>
+<p>协程本质上就是异步回调的一种简化写法。使用顺序结构更容易理解，异常处理也更直观</p>
+<p>假设我有一个异步操作</p>
+<ul>
+<li>如果不用协程，我的写法是 显示这个异步回调，然后继续写后面的代码</li>
+<li>如果使用协程，我的写法是 开一个协程作用域，在协程作用域中用同步代码的思路来写，但是这里面不能有阻塞IO的操作<ul>
+<li>如果有阻塞IO的操作，使用withContext(Dispatchers.IO)使用IO调度器将阻塞操作委托给一个单独的线程池。这样协程本身不会阻塞，而是在线程池中的线程执行阻塞I&#x2F;O操作</li>
+<li>挂起函数不会阻塞线程里后续的代码，但是会阻塞协程后续的代码<ul>
+<li>所谓挂起函数，是它执行的时候会阻塞同一个协程中后续代码的执行，当挂起函数被调用是，它挂起的是当前的协程，让出线程，让线程执行外部后续的代码，直到挂起函数操作完成。</li>
+<li>理解了挂起函数是什么就能理解协程</li>
+<li>开启协程作用域之后，代码还是会顺序执行，直到遇到挂起函数。这个协程会暂停执行，让协程外面的代码继续执行。等到挂起函数执行完，在取回线程的执行权<ul>
+<li>挂起函数完成后，协程后续的代码和协程外面的代码执行的优先级，是由调度器决定的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>关键字辨析</p>
+<ul>
+<li>withContext: 挂起函数，可用于将一个阻塞IO委托给单独的线程池，得到一个非阻塞的挂起函数</li>
+<li>async: async不会阻塞当前协程，会返回一个Deferred。<ul>
+<li>用于并发执行任务，</li>
+<li>异常处理</li>
+<li>当不需要执行任务的时候，async是必要的吗？</li>
+</ul>
+</li>
+<li>await：只和async配合使用，用于等待async的结果。会阻塞协程。阻塞协程其实就是把协程挂起。从而避免协程阻塞线程</li>
+<li>suspend：挂起函数，被挂起函数修饰的方法，要不在协程作用域调用，要把在另一个挂起函数中调用</li>
+<li>launch: 开启协程作用域</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-comment">//使用async</span>
+<span class="hljs-type">val</span> <span class="hljs-variable">deferredResult</span> <span class="hljs-operator">=</span> async(Dispatchers.IO) &#123;
+    fetchDataFromNetwork()
+&#125;
+<span class="hljs-comment">// 可以执行其他操作</span>
+<span class="hljs-comment">// ...</span>
+<span class="hljs-comment">// 等待异步任务完成，并获取结果</span>
+<span class="hljs-type">val</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> deferredResult.await()
+
+
+<span class="hljs-comment">//使用withContext</span>
+<span class="hljs-type">val</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> withContext(Dispatchers.IO) &#123;
+    <span class="hljs-comment">// 在 IO 线程上执行的代码</span>
+    fetchDataFromNetwork()
+&#125;
+
+<span class="hljs-comment">//这两种方法的主要区别是，async和await，允许在两个操作间执行一些其他操作，相当于并行利用了async和await这段时间</span></code></pre>
+
+<p>用协程的好处：比如说我要实现一个网络请求成功后，刷新TextView的操作</p>
+<ul>
+<li>不用协程的话，我需要开线程同步请求网络，等待结果，然后切线程回来刷新TextView。如果把这个操作封装一下的话，也是一个异步回调的方法，传入请求参数，在回调中获取结果，刷新TextView</li>
+<li>如果用协程的话，我需要新建一个协程作用域，然后在作用域中发起一个挂起函数的网络请求，这个挂起函数会阻塞协程，但是不阻塞线程，协程中等待挂起函数执行完，更新TextView，这样写法看起来就是同步的写法。省掉一个回调。网络请求的封装可以，如果请求库支持可能本身返回的就是一个挂起函数，那什么操作都不用做就是请求然后返回结果。如果请求库不支持就用withContext(Dispatch.IO)把网络请求委托给IO调度器使用线程池来做这个操作，这样我们把一个本来阻塞的IO操作委托给线程池，获得了一个不阻塞的挂起函数。<ul>
+<li>如果本身使用的okhttp异步请求，可以利用suspendCancellableCoroutine将异步操作封装成协程的形式。回调成功执行continuation.resume(response)，失败执行continuation.resumeWithException(e)</li>
+</ul>
+</li>
+<li>使用协程在调用端避免使用了一次回调。如果有多层回调嵌套，比如利用第一次返回的结果，再去请求数据，不用协程会多一层的嵌套。如果用协程，只需要第一结果回来之后，再去请求第二次，然后刷新，依然是同步代码的写法。</li>
+</ul>
+<p>协程本质上是一个将异步回调写法简化成同步写法的方案，如果把它说成像一种轻量级的线程，会让人迷惑。</p>
+<p>协程不一定要启动线程。如果需要执行阻塞IO需要线程，如果执行非阻塞IO，比如delay方法，可以利用协程调度本身来避免切换线程。<br>线程切换，每次切换回来之后，就要增加一个回调层次。但是的线程是封装在挂起函数里的，挂起函数回来后，可以继续在原线程执行下面的方法</p>
+<p>挂起函数的本质，当执行到挂起函数时，挂起函数所在的协程会阻塞并且挂起，这样协程所在的线程就可以继续执行后续的代码了。<br>至于挂起函数怎么实现的挂起，和上面的问题无关。</p>
+<p>怎么实现的挂起</p>
+<ul>
+<li>如果挂起函数中包含的是一个阻塞IO请求，挂起函数会把这个请求委托给线程池去处理，这样阻塞IO请求阻塞的是另一个线程，挂起函树就实现了不阻塞当前线程。</li>
+<li>如果挂起函数中包含的是一个非阻塞请求，例如delay方法，其实就是嵌套了另一个挂起函数，而delay请求实现的机制是利用协程调度器<ul>
+<li>协程挂起后是怎么在主线程执行的过程中重新恢复的 &#x2F;&#x2F;TODO</li>
+</ul>
+</li>
+</ul>
+<p>关于主线程的本质</p>
+<ul>
+<li>其实本质上切换到主线程都是在给主线程的消息队列发消息。因为主线程在Looper中。如果是子线程间的切换，可以自己实现轮询和休眠等等机制</li>
+<li>view.post(Runnable)就是往主线程队列添加任务，在下一个MessageQueue中执行，执行的时间点是在 onMeasure, onLayout, onDraw之后。视图的大小是在onMeasure中确定的<ul>
+<li>invalidate只影响调用的布局本身，不影响父视图和子视图。只改变内容<ul>
+<li>invalidate() 只是标记下次onDraw的时候要重绘，本身不会触发onDraw操作</li>
+</ul>
+</li>
+<li>requestLayout影响的是本身 父视图和兄弟视图。改变视图的大小或位置</li>
+</ul>
+</li>
+</ul>
+<p>系统是怎么触发绘制流程的</p>
+<ul>
+<li>绘制流程是系统自动触发的，Android存在一个消息循环，系统在每个消息循环中检查是否需要进行绘制操作<ul>
+<li>Android 系统会以一定的频率（通常是每 16 毫秒，即约 60 帧每秒）向消息队列发送绘制请求的消息。这是由 Choreographer 类来协调的，它负责提供系统级别的定时触发绘制的机制。<ul>
+<li>应用进程中，ViewRootImpl在初始化时向Choreographer注册自己的FrameCallback，等待回调</li>
+<li>Choregrapher监听系统VSYNC垂直同步信号(60Hz)，调用FrameCallback的回调方法doFrame，通过应用进程ViewRootImpl执行绘制</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ViewRootImpl是View树根节点，是整个绘制流程的入口，在每个消息循环，ViewRootImpl会检查是否有视图需要绘制</li>
+<li>ViewRootImpl中的performTraversals方法是触发绘制的核心，负责调用measure,layout,draw<ul>
+<li>当第一次视图被添加进视图层次结构是，会调用onMeasure和onLayout和onDraw</li>
+<li>当调用requestLayout，系统会标记视图为需要重新布局</li>
+<li>当调用invalidate，系统会标记视图需要重绘</li>
+</ul>
+</li>
+</ul>
+<p>Kotlin的好处</p>
+<ul>
+<li>绑定生命周期(作用域)</li>
+<li>可取消</li>
+<li>异步回调写成同步的形式，可读性更好</li>
+<li>方便异常处理</li>
+<li>协程是一种更好抽象层次的线程池，简化实现<ul>
+<li>android中的很多非阻塞I&#x2F;O，本质上也是用线程来承载阻塞I&#x2F;O的，那使用协程本身并没办法避免用到阻塞I&#x2F;O，比如网络请求。只是更简单的管理阻塞I&#x2F;O，和非阻塞I&#x2F;O。</li>
+</ul>
+</li>
+</ul>
+<p>阻塞IO需要开线程，调整成异步回调的方式，转换成在发起请求的线程上的非阻塞IO<br>而平时我们认为的非阻塞IO本质就是这种形式。<br>协程就是提供了一种把阻塞IO和非阻塞IO都统一成挂起函数的方式。</p>
+<ul>
+<li>挂起函数本质是 会挂起协程的函数，而不是函数本身会挂起。</li>
+<li>挂起函数本身的构造方式有三种<ul>
+<li>阻塞IO withContext(Dispatch.IO)</li>
+<li>非阻塞IO<ul>
+<li>可能是一个异步回调 suspendCancellableCoroutine.resume &amp; resumeWithException </li>
+<li>可能是另一个挂起函数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h1><h2 id="使用流程-8"><a href="#使用流程-8" class="headerlink" title="使用流程"></a>使用流程</h2><p><strong>Camera1接口</strong></p>
 <pre><code class="hljs kotlin"><span class="hljs-keyword">var</span> camera: Camera? = <span class="hljs-literal">null</span>
 
 <span class="hljs-comment">//预览</span>
@@ -1294,7 +1439,26 @@ performSomeTask()</code></pre></li>
 <li>android.view.View.dispatchPointerEvent</li>
 </ul>
 <p>&#x2F;&#x2F;TODO</p>
-
+<h2 id="不同Activity怎么共享同一个ViewModel实例"><a href="#不同Activity怎么共享同一个ViewModel实例" class="headerlink" title="不同Activity怎么共享同一个ViewModel实例"></a>不同Activity怎么共享同一个ViewModel实例</h2><h2 id="屏幕适配"><a href="#屏幕适配" class="headerlink" title="屏幕适配"></a>屏幕适配</h2><h2 id="RecyclerView的四级缓存机制"><a href="#RecyclerView的四级缓存机制" class="headerlink" title="RecyclerView的四级缓存机制"></a>RecyclerView的四级缓存机制</h2><ul>
+<li>mAttachedScrap &#x2F; mChangedScrap<ul>
+<li>屏幕内ItemView快速复用</li>
+</ul>
+</li>
+<li>mCachedViews<ul>
+<li>默认上限两个，缓存屏幕外2个ItemView</li>
+</ul>
+</li>
+<li>mViewCacheExtension<ul>
+<li>不直接使用，需要用户定制</li>
+</ul>
+</li>
+<li>mRecyclerPool<ul>
+<li>默认上限5个，技术上可以实现所有RecyclerViewPool共用同一个</li>
+<li>需要回调bindView</li>
+</ul>
+</li>
+</ul>
+<h2 id="Handle-同步屏障"><a href="#Handle-同步屏障" class="headerlink" title="Handle 同步屏障"></a>Handle 同步屏障</h2>
             </div>
         </div>
     </div>

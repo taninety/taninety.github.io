@@ -70,15 +70,12 @@
             <div class="post-content">
                 <ul>
 <li><a href="#%E6%A6%82%E8%A7%88">概览</a></li>
-<li><a href="#%E5%8C%85%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96">包体积优化</a></li>
 <li><a href="#%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96">启动优化</a></li>
-<li><a href="#%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96">网络优化</a></li>
 <li><a href="#%E5%8D%A1%E9%A1%BF%E4%BC%98%E5%8C%96">卡顿优化</a></li>
 <li><a href="#%E7%A8%B3%E5%AE%9A%E6%80%A7%E4%BC%98%E5%8C%96">稳定性优化</a></li>
-<li><a href="#%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96">内存优化</a></li>
 <li><a href="#%E8%80%97%E7%94%B5%E4%BC%98%E5%8C%96">耗电优化</a></li>
-<li><a href="#%E5%B8%83%E5%B1%80%E4%BC%98%E5%8C%96">布局优化</a></li>
-<li><a href="#%E7%BB%98%E5%88%B6%E4%BC%98%E5%8C%96">绘制优化</a></li>
+<li><a href="#%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96">网络优化</a></li>
+<li><a href="#%E5%8C%85%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96">包体积优化</a></li>
 </ul>
 <h1 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h1><p>从用户使用角度</p>
 <ul>
@@ -93,14 +90,19 @@
 <p>从优化目的的角度</p>
 <ul>
 <li>流畅<ul>
-<li>卡顿优化</li>
+<li>启动优化</li>
+<li>卡顿优化<ul>
 <li>布局优化</li>
 <li>绘制优化</li>
 </ul>
 </li>
+</ul>
+</li>
 <li>稳定<ul>
+<li>稳定性优化<ul>
 <li>内存优化</li>
-<li>稳定性优化</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>低耗损<ul>
@@ -118,54 +120,78 @@
 <li>常见的优化点</li>
 <li>可使用的工具</li>
 </ul>
-<h1 id="包体积优化"><a href="#包体积优化" class="headerlink" title="包体积优化"></a>包体积优化</h1><ul>
-<li>删除不用的资源</li>
-<li>不影响APP效果下，尽量压缩图片</li>
-<li>有限保留v7版本so库，删除其他版本so库</li>
-<li>代码混淆</li>
-</ul>
 <h1 id="启动优化"><a href="#启动优化" class="headerlink" title="启动优化"></a>启动优化</h1><ul>
+<li>将启动页主题背景设置成闪屏图片 (Splash)</li>
+<li>Application和主Activity onCreate异步初始化不必要的代码<ul>
 <li>非必要组件懒加载</li>
-<li>减少冷启动发生</li>
-<li>使用启动页过度</li>
-<li>添加载入进度动画</li>
+<li>或者延时加载</li>
 </ul>
-<h1 id="网络优化"><a href="#网络优化" class="headerlink" title="网络优化"></a>网络优化</h1><ul>
-<li>合并网络请求</li>
-<li>采用分页方式加载数据</li>
-<li>数据采用GZIP压缩</li>
-<li>使用缓存</li>
-<li>上传图片时尽量压缩</li>
+</li>
+<li>主页面布局优化 (<strong>布局优化</strong>)<ul>
+<li>减少冗余或者嵌套布局降低视图层次结构<ul>
+<li>优先使用LinearLayout和ConstraitLayout布局</li>
+</ul>
+</li>
+<li>使用ViewStub替代启动过程中不需要显示的控件</li>
+<li>(使用include提取公共布局，或者自定义控件)</li>
+</ul>
+</li>
+<li>减少冷启动发生<ul>
+<li>尽量降低应用内存，避免被系统回收</li>
+</ul>
+</li>
 </ul>
 <h1 id="卡顿优化"><a href="#卡顿优化" class="headerlink" title="卡顿优化"></a>卡顿优化</h1><ul>
-<li>不在主线程进行IO操作，比如访问网络，读取数据，大文件</li>
-<li>减少布局嵌套层次，尽量使用ConstrainLayout</li>
-<li>ViewPager显示的时候才加载数据</li>
-<li>ListView：布局复用，使用ViewHolder避免查找控件，滑动时不加载图片</li>
-<li>避免过度绘制，不要给布局重复设置背景</li>
-<li>降低内存使用，GC频繁会引起卡顿</li>
-<li><strong>绘制优化</strong></li>
-<li><strong>布局优化</strong></li>
+<li>布局复杂 (<strong>布局优化</strong>) onMeasure&#x2F;onLayout<ul>
+<li>减少冗余或者嵌套布局降低视图层次结构</li>
+<li>布局懒加载 viewStub</li>
+<li>布局复用，比如listview，使用convertview, viewholder，滑动时不加载图片</li>
 </ul>
-<h1 id="稳定性优化"><a href="#稳定性优化" class="headerlink" title="稳定性优化"></a>稳定性优化</h1><p><strong>崩溃</strong></p>
-<p><strong>内存溢出OOM</strong></p>
-<ul>
-<li><strong>内存优化</strong></li>
+</li>
+<li>过度绘制 <strong>绘制优化</strong> onDraw<ul>
+<li>移除布局不必要的背景，避免过度绘制</li>
 </ul>
-<p><strong>ANR</strong></p>
-<ul>
-<li>避免主线程操作耗时任务</li>
-<li>避免死锁</li>
+</li>
+<li>UI线程有复杂运算或者IO操作<ul>
+<li>不在主线程进行IO操作，比如访问网络，读取数据，大文件<ul>
+<li>比如 ondraw中不要做耗时任务</li>
 </ul>
-<h1 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h1><p><strong>减少内存使用</strong></p>
-<ul>
-<li>加载Bitmap时按照大小采样</li>
-<li>使用消息池&#x2F;线程池，避免创建过多临时对象</li>
+</li>
+<li>超过16ms就会卡顿，更严重些会产生ANR</li>
 </ul>
-<p><strong>内存泄露</strong></p>
-<p>Activity销毁之后，仍旧被其他对象持有</p>
+</li>
+<li>频繁GC<ul>
+<li>内存抖动，大量临时对象被创建<ul>
+<li>使用池化对象，避免创建过多临时对象，比如消息池Message.obtain</li>
+<li>比如 onDraw中不要创建临时对象</li>
+</ul>
+</li>
+<li>创建的对象占用空间太大（比如Bitmap）</li>
+</ul>
+</li>
+</ul>
+<h1 id="稳定性优化"><a href="#稳定性优化" class="headerlink" title="稳定性优化"></a>稳定性优化</h1><p><strong>Fatal崩溃</strong></p>
 <ul>
-<li>长周期对象持有短周期对象<ul>
+<li>避免代码逻辑的问题<ul>
+<li>比如空指针，数组越界，类型转换异常</li>
+</ul>
+</li>
+<li>要做异常处理</li>
+<li>全局CrashHandler，对系统崩溃兜底<ul>
+<li>实现 UncaughtExceptionHandler 接口</li>
+<li>通过反射设置 ActivityThread.mH.mCallback 的try-catch</li>
+</ul>
+</li>
+</ul>
+<p><strong>OOM内存溢出</strong></p>
+<ul>
+<li>降低内存使用 <strong>内存优化</strong><ul>
+<li>使用大对象<ul>
+<li>加载Bitmap时按照大小采样，使用开源库Glide</li>
+</ul>
+</li>
+<li>无用对象没有及时回收 <strong>内存泄露</strong> <ul>
+<li>长周期对象持有短周期对象 (Activity销毁之后，仍旧被其他对象持有)<ul>
 <li>静态变量持有Activity</li>
 <li>静态变量持有Activity内部的非静态类实例</li>
 </ul>
@@ -190,18 +216,32 @@
 </ul>
 </li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>ANR</strong></p>
+<ul>
+<li>避免主线程操作复杂计算或IO操作等耗时任务</li>
+<li>避免逻辑问题引起死锁</li>
+</ul>
 <h1 id="耗电优化"><a href="#耗电优化" class="headerlink" title="耗电优化"></a>耗电优化</h1><ul>
 <li>减少后台唤醒操作</li>
 <li>切换到后台时，取消网络，GPS定位等不必要的耗电操作</li>
 </ul>
-<h1 id="布局优化"><a href="#布局优化" class="headerlink" title="布局优化"></a>布局优化</h1><ul>
-<li>减少View层级，优先选用LinearLayout，或者ContraintLayout</li>
-<li>使用include抽取组件公共部分</li>
-<li>使用自定义布局</li>
+<h1 id="网络优化"><a href="#网络优化" class="headerlink" title="网络优化"></a>网络优化</h1><ul>
+<li>合并网络请求</li>
+<li>采用分页方式加载数据</li>
+<li>数据采用GZIP压缩</li>
+<li>使用缓存</li>
+<li>上传图片时尽量压缩</li>
+<li>使用开源库 okhttp</li>
 </ul>
-<h1 id="绘制优化"><a href="#绘制优化" class="headerlink" title="绘制优化"></a>绘制优化</h1><ul>
-<li>onDraw中不要创建临时对象</li>
-<li>onDraw中不要做耗时任务</li>
+<h1 id="包体积优化"><a href="#包体积优化" class="headerlink" title="包体积优化"></a>包体积优化</h1><ul>
+<li>删除不用的资源</li>
+<li>不影响APP效果下，尽量压缩图片</li>
+<li>有限保留v7版本so库，删除其他版本so库</li>
+<li>代码混淆</li>
 </ul>
 
             </div>

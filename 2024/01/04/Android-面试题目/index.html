@@ -147,9 +147,310 @@
 </li>
 <li>ContextImpl 上下功能的实现类</li>
 </ul>
-<h2 id="Activity、View、Window三者关系"><a href="#Activity、View、Window三者关系" class="headerlink" title="Activity、View、Window三者关系"></a>Activity、View、Window三者关系</h2><ul>
+<h2 id="Activity、View、Window三者关系？"><a href="#Activity、View、Window三者关系？" class="headerlink" title="Activity、View、Window三者关系？"></a>Activity、View、Window三者关系？</h2><ul>
 <li>Activity构造的时候会初始化一个Window，即PhoneWindow，每个</li>
 <li>PhoneWindow有一个</li>
+</ul>
+<h2 id="四种LaunchMode及其使用场景"><a href="#四种LaunchMode及其使用场景" class="headerlink" title="四种LaunchMode及其使用场景"></a>四种LaunchMode及其使用场景</h2><p>Standard：每次都会创建新的Activity实例</p>
+<ul>
+<li>使用场景：大多数Activity</li>
+</ul>
+<p>SingleTop：如果要打开的Activty正好在任务的栈顶，就重用该实例。会回调 onNewIntent</p>
+<ul>
+<li>使用场景：新闻类或阅读类App的内容页面</li>
+</ul>
+<p>SingleTask：如果要打开的Activity正好在栈内，就重用该实例，同时把它上面的实例移出栈。会回调 onNewIntent</p>
+<p>SingleInstance：在一个新栈中创建该Activity实例，让多个应用共享该栈中的实例。SingleInstance不要用于中间页面，跳转会有问题。</p>
+<h2 id="View绘制流程-TODO-具体draw流程还不清楚"><a href="#View绘制流程-TODO-具体draw流程还不清楚" class="headerlink" title="View绘制流程 &#x2F;&#x2F;TODO 具体draw流程还不清楚"></a>View绘制流程 &#x2F;&#x2F;TODO 具体draw流程还不清楚</h2><p>自定义控件</p>
+<ul>
+<li>组合控件</li>
+<li>继承原有控件</li>
+<li>完全自定义控件</li>
+</ul>
+<p>绘制流程</p>
+<ul>
+<li>onMeasure：测试视图大小，从顶层父布局到子布局依次递归调用measure方法 (<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ef922ca6055e">https://www.jianshu.com/p/ef922ca6055e</a>)<ul>
+<li>measure final方法，不能被重写，内部调用onMeasure</li>
+<li>onMeasure 可被重写，自定义View主要关注的方法<ul>
+<li>measureChild</li>
+</ul>
+</li>
+<li>setMeasureDimension 测量完view尺寸后，将view的宽高保存到成员变量</li>
+<li>getDefaultSize 设定中尺寸来源于这个方法</li>
+</ul>
+</li>
+<li>onLayout：确定视图位置，父布局根据上一步measure子布局所得到的布局大小和参数，将子布局放在合适的位置上 (<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/af7c6cb6939c">https://www.jianshu.com/p/af7c6cb6939c</a>)<ul>
+<li>View：layout方法确定自身位置，通过left、top、right、bottom四个参数确定，无需实现onLayout方法<ul>
+<li>setFrame(l, t, r, b);</li>
+</ul>
+</li>
+<li>ViewGroup：先重写layout确定自身位置，然后重写onLayout确定子布局位置<ul>
+<li>onLayout是抽象方法，必须自己实现</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>onDraw：ViewRoot创建一个Canvas对象，然后调用onDraw (<a target="_blank" rel="noopener" href="https://blog.csdn.net/u011371324/article/details/89442432">https://blog.csdn.net/u011371324/article/details/89442432</a>)<ul>
+<li>draw 绘制总调度函数，也是入口函数</li>
+<li>drawBackground 绘制背景</li>
+<li>onDraw 绘制view本身的内容</li>
+<li>dispatchDraw 绘制子View<ul>
+<li>child.draw</li>
+</ul>
+</li>
+<li>onDrawForeground 绘制指示器和滚动条，绘制前景</li>
+</ul>
+</li>
+</ul>
+<h2 id="View，ViewGroup事件分发"><a href="#View，ViewGroup事件分发" class="headerlink" title="View，ViewGroup事件分发"></a>View，ViewGroup事件分发</h2><p>分发中的主角</p>
+<ul>
+<li>ViewGroup 包含方法 dispatchTouchEvent、onInterceptTouchEvent、onTouchEvent</li>
+<li>View 包含方法 dispatchTouchEvent、onTouchEvent</li>
+</ul>
+<p>分发流程：事件传递 -&gt; 目标处理 -&gt; 事件冒泡 （<a target="_blank" rel="noopener" href="https://juejin.cn/post/6917056099069722632%EF%BC%89">https://juejin.cn/post/6917056099069722632）</a></p>
+<ul>
+<li>当Activity接收到Touch事件时，将递归遍历子View进行Down事件的分发。<ul>
+<li>分发的目的是为了找到真正要处理本次完整触摸事件的View，这个View回在onTouchEvent中返回true<ul>
+<li>完整的触摸事件包括 ACTION_DOWN、ACTION_MOVE、ACTION_UP，一次完整的触摸事件 DOWN和UP只有一个，MOVE可以是0到任意多个</li>
+</ul>
+</li>
+<li>当某个子View返回true是，会终止Down事件的分发，同时在ViewGroup中记录该子View，接下来的Move和Up事件将由该子View进行处理<ul>
+<li>比如 ViewGroup0-ViewGroup1-Text结构中，TextView返回ture，它将被保存在ViewGroup1中，而ViewGroup1返回true，它将保存在ViewGroup0中<ul>
+<li>ACTION_MOVE时，如果 mFirstTouchTarget &#x3D;&#x3D; null，会直接交给自己处理，这些事件不会到达下面的view</li>
+</ul>
+</li>
+<li>如果ViewGroup在一定条件下，拦截了ACTION_MOVE事件，那么此前消费的子View会收到一个ACTION_CANCEL事件，同时onInterceptTouchEvent在此事件序列中不会再被调用<ul>
+<li>ACTION_MOVE时，onInterceptTouchEvent一旦返回true，就再也不会被调用 （<a target="_blank" rel="noopener" href="https://juejin.cn/post/6914167234961080334%EF%BC%89">https://juejin.cn/post/6914167234961080334）</a><ul>
+<li>因为mFirstTouchTarget会被重置成null，onInterceptTouchEvent的调用条件是 actionMasked &#x3D;&#x3D; MotionEvent.ACTION_DOWN || mFirstTouchTarget !&#x3D; null</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>当ViewGroup所有子View都不消费事件，将触发父布局onTouchEvent方法</li>
+</ul>
+</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-comment">//伪代码</span>
+
+<span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">dispatchTouchEvent</span><span class="hljs-params">(MotionEvent ev)</span> &#123;
+    <span class="hljs-type">boolean</span> <span class="hljs-variable">consume</span> <span class="hljs-operator">=</span> <span class="hljs-literal">false</span>;
+
+    <span class="hljs-keyword">if</span> (onInterceptTouchEvent(ev)) &#123;
+        consume = onTouchEvent(ev);
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-keyword">if</span> (child.dispatchTouchEvent(ev)) &#123;
+            mFirstTouchTarget = target;
+            consume = <span class="hljs-literal">true</span>;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">if</span> (mFirstTouchTarget == <span class="hljs-literal">null</span>) &#123;
+        consume = <span class="hljs-built_in">super</span>.dispatchTouchEvent(ev);
+    &#125;
+    <span class="hljs-keyword">return</span> consume;
+&#125;</code></pre>
+
+<p>onInterceptTouchEvent作用</p>
+<ul>
+<li>拦截Down事件的分支</li>
+<li>中止Up和Move事件向目标View传递，使得目标View所在的ViewGroup捕获Up和Move事件</li>
+</ul>
+<h2 id="保存Activity状态"><a href="#保存Activity状态" class="headerlink" title="保存Activity状态"></a>保存Activity状态</h2><ul>
+<li><p>onSaveInstanceState</p>
+<ul>
+<li>android 9之前，onSaveInstance在onStop之前调用</li>
+<li>android 9之后，onSaveInstance在onStip之后调用</li>
+</ul>
+</li>
+<li><p>onRestoreInstanceState</p>
+<ul>
+<li>是在onStart之后调用</li>
+</ul>
+</li>
+</ul>
+<h2 id="Android中的几种动画"><a href="#Android中的几种动画" class="headerlink" title="Android中的几种动画"></a>Android中的几种动画</h2><ul>
+<li>帧动画：指定每一帧的图片和播放时间，有序的进行播放而形成动画效果</li>
+<li>补间动画：通过算法进行图形变化，形成动画效果。没有真正改变属性。只可以应用于View<ul>
+<li>alpha, scale, translate, rotate</li>
+<li>比如按钮移动到其他位置，但是点击区域还是在远位置</li>
+<li>插值器</li>
+</ul>
+</li>
+<li>属性动画：通过不断改变View属性，不断重绘形成动画。可以应用于任何对象</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">scale</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:fromXScale</span>=<span class="hljs-string">&quot;0.0&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:fromYScale</span>=<span class="hljs-string">&quot;0.0&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:toXScale</span>=<span class="hljs-string">&quot;1.0&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:toYScale</span>=<span class="hljs-string">&quot;1.0&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:duration</span>=<span class="hljs-string">&quot;1000&quot;</span></span>
+<span class="hljs-tag">    <span class="hljs-attr">android:interpolator</span>=<span class="hljs-string">&quot;@android:anim/accelerate_decelerate_interpolator&quot;</span> /&gt;</span></code></pre>
+
+<pre><code class="hljs java"><span class="hljs-comment">//补间动画</span>
+<span class="hljs-type">Animation</span> <span class="hljs-variable">animation</span> <span class="hljs-operator">=</span> AnimationUtils.loadAnimation(<span class="hljs-built_in">this</span>, R.anim.scale_up);
+myView.startAnimation(animation);</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-comment">//属性动画</span>
+<span class="hljs-type">ObjectAnimator</span> <span class="hljs-variable">translationX</span> <span class="hljs-operator">=</span> ObjectAnimator.ofFloat(myView, <span class="hljs-string">&quot;translationX&quot;</span>, <span class="hljs-number">0f</span>, <span class="hljs-number">200f</span>);
+translationX.setDuration(<span class="hljs-number">1000</span>);
+translationX.setInterpolator(<span class="hljs-keyword">new</span> <span class="hljs-title class_">AccelerateDecelerateInterpolator</span>());
+translationX.start();</code></pre>
+
+<h2 id="Android中跨进程通讯的几种方式"><a href="#Android中跨进程通讯的几种方式" class="headerlink" title="Android中跨进程通讯的几种方式"></a>Android中跨进程通讯的几种方式</h2><ul>
+<li>intent: 传一个URI，打开其他应用</li>
+<li>contentProvider：共享数据</li>
+<li>Service：远程服务，aidl</li>
+<li>广播</li>
+</ul>
+<h2 id="AIDL与Binder原理"><a href="#AIDL与Binder原理" class="headerlink" title="AIDL与Binder原理"></a>AIDL与Binder原理</h2><p>Messenger：跨进程简单通信</p>
+<ul>
+<li>服务端使用Handler构造 <code>val messager = Messager(new Handler())</code></li>
+<li>服务端可以获取到Binder，传给客户端 <code>messager.getBinder()</code></li>
+<li>客户端使用IBinder代理对象构造 <code>val messager = Messager(iBinder)</code></li>
+<li>客户端直接发消息 <code>messager.send(message)</code></li>
+<li>客户端可以设置回复的 Messager <code>message.replyTo = new Messager(new Handler())</code></li>
+</ul>
+<p>AIDL</p>
+<ul>
+<li>BroadcastReceiver 占用系统的资源比较多</li>
+<li>Messager 使用的消息队列机制，无法并发执行</li>
+<li>AIDL 可以定义复杂的接口</li>
+</ul>
+<p>AIDL 定义进程间通信的接口，为了简化代码的。本质上就是使用了Binder机制</p>
+<ul>
+<li>transact 和 onTransact</li>
+</ul>
+<p>Binder原理 (<a target="_blank" rel="noopener" href="https://juejin.cn/post/6872022466508619789">https://juejin.cn/post/6872022466508619789</a>)</p>
+<ul>
+<li>共有四个组件 Client、Service、ServiceManager、Binder驱动</li>
+<li>Client、Service、ServiceManager运行在用户控件，Binder驱动运行在内核空间。Binder把四个组件连接在一起</li>
+<li>Client、Service、ServiceManager 通过系统调用 open, ioctl 方法与Binder驱动动心。</li>
+<li>Service通过Binder将服务注册到ServiceManager，Client通过Binder向ServiceManager查询Service地址，拿到地址后Client通过Client和Service通信</li>
+<li>通信的过程是，数据从客户端进程的用户控件拷贝到服务端进程的内核控件，然后通过内存映射共享给服务端进程的用户控件，实现通信。这样只需要拷贝一次内存</li>
+</ul>
+<p>一次拷贝</p>
+<ul>
+<li>发起方用户空间，打包tr(指向数据的指针)，再打包bwr(指向tr的指针)<ul>
+<li>writeTransactionData</li>
+<li>talkWithDriver</li>
+</ul>
+</li>
+<li>发起方内核空间，把tr和bwr地址从用户空间拷到内核<ul>
+<li>copy_from_user(&amp;bwr</li>
+<li>binder_thread_write</li>
+<li>copy_from_user(&amp;tr</li>
+</ul>
+</li>
+<li>直接把数据从发起方用户空间拷贝到接收方内核空间的内存映射中<ul>
+<li>binder_transaction(<ul>
+<li>binder_alloc_new_buf(&amp;target_proc-&gt;alloc</li>
+<li>copy_from_user(t-&gt;buffer-&gt;data, (const void __user *)(uintptr_t)<br>     tr-&gt;data.ptr.buffer, tr-&gt;data_size)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>接收方内核空间，把tr拷贝给接收方的用户控件 （之前要先把内核映射的数据地址转换为用户空间的指针）<ul>
+<li>copy_to_user(ptr, &amp;tr</li>
+<li>copy_to_user(ubuf, &amp;bwr</li>
+</ul>
+</li>
+<li>接收方内存空间，把tr从mIn里面读出来，<ul>
+<li>mIn.read(&amp;tr, sizeof(tr))</li>
+<li>reinterpret_cast&lt;BBinder*&gt;(tr.cookie)-&gt;transact(tr.code</li>
+</ul>
+</li>
+</ul>
+<p>整个流程中 copy_from_user 共三次，copy_to_user 共两次</p>
+<ul>
+<li>TR 指针（Transaction 指针）： TR 指针指向了客户端传递给 Binder 驱动的事务数据（Transaction）</li>
+<li>BWR 指针（Binder Write Read 指针）： BWR 指针用于标识当前进行的数据传输中，已经传输的数据的位置，以及将要传输的数据的位置。</li>
+</ul>
+<h2 id="Handler原理"><a href="#Handler原理" class="headerlink" title="Handler原理"></a>Handler原理</h2><ul>
+<li>四个组件 Handler，Message，MessageQueue，Looper</li>
+<li>prepareMainLooper<ul>
+<li>ThreadLocal<Looper> &#x3D; new Looper()<ul>
+<li>new MessageQueue</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>new Handler(Looper.myLooper)</li>
+<li>Looper.loop()<ul>
+<li>MessageQueue.next() -&gt; epoll机制监听消息<ul>
+<li>nativePollOnce -&gt; epoll_wait函数等待事件发生，内核层面实现的，不会消耗CPU资源</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>handler.sendMessage(message) &#x2F; handle.post(runnable)</li>
+</ul>
+<h2 id="热修复原理"><a href="#热修复原理" class="headerlink" title="热修复原理"></a>热修复原理</h2><ol>
+<li>Android虚拟机加载 Dalvik&#x2F;ART 加载类的dex文件</li>
+<li>加载类需要ClassLoader</li>
+<li>子类BaseDexClassLoader下有一个数组 DexPathList，用来存放dex文件</li>
+<li>BaseDexClassLoader调用findClass实际是遍历数组，找到第一个需要的dex就return</li>
+<li>热修复解决方法是将新的dex添加到该集合中，旧的dex前面</li>
+</ol>
+<h2 id="插件化的原理"><a href="#插件化的原理" class="headerlink" title="插件化的原理"></a>插件化的原理</h2><ul>
+<li>自定义类加载器，能够加载插件的类并与应用中的类隔离</li>
+<li>实现插件的生命周期管理，包括插件的加载，初始化，卸载</li>
+<li>解决资源冲突，插件与宿主应用之间的资源隔离。包括资源文件、布局文件的管理和加载</li>
+<li>插件间通信</li>
+<li>插件与宿主的交互</li>
+</ul>
+<h2 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h2><p>内存溢出：申请内存的时候，没有足够的内存供其使用，出现out of memory</p>
+<p>内存泄漏：程序申请内存后，无法释放已申请的内存空间。一次内存泄漏危害可以忽略，内存泄漏堆积后果严重</p>
+<p>内存泄漏原因</p>
+<ul>
+<li>Handler 引起的内存泄漏：Activity onDestroy之后，MessageQueue中还有未执行完的Message，Message target字段持有handler，handler是Activity的非静态内部类，持有Activity的引用<ul>
+<li>Handler声明为静态内部类，如果需要conext，用软引用的方式引用</li>
+</ul>
+</li>
+<li>单例模式引起的内存泄漏：单例模式的对象保存了Activity Context引用<ul>
+<li>可以修改成持有ApplicationContext的引用，ApplicationContext的生命周期和app是一样的</li>
+</ul>
+</li>
+<li>非静态内部类创建静态实例：静态实例持有非静态内部类实例，间接持有Activity<ul>
+<li>内部类修改为静态内部类</li>
+</ul>
+</li>
+<li>非静态匿名内部类引起的内存泄漏<ul>
+<li>将匿名内部类设置为静态</li>
+</ul>
+</li>
+<li>未反注册成对使用的对象<ul>
+<li>比如BroadcastReceiver</li>
+</ul>
+</li>
+<li>资源对象没有关闭<ul>
+<li>不使用的室友调用类似 close, destroy, recycler, release</li>
+</ul>
+</li>
+<li>集合对象没有及时清理引起的内存泄漏<ul>
+<li>及时清理</li>
+</ul>
+</li>
+</ul>
+<h2 id="Fragment与Fragment、Activity通信方式"><a href="#Fragment与Fragment、Activity通信方式" class="headerlink" title="Fragment与Fragment、Activity通信方式"></a>Fragment与Fragment、Activity通信方式</h2><p>Fragment调用Activity</p>
+<ul>
+<li>直接getActivity，然后强转成对应Activity，就能调用方法</li>
+<li>让Activity实现接口，将接口设置进Fragment</li>
+</ul>
+<p>Activity调用ragment</p>
+<ul>
+<li>supportFragmentManager获取对应Fragment实例，调用对应方法</li>
+</ul>
+<p>Fragment调用Fragment</p>
+<ul>
+<li>先获取Activity，在通过Activity获取supportFragmentManager获取对应Fragment实例</li>
+</ul>
+<h2 id="Android-UI适配？"><a href="#Android-UI适配？" class="headerlink" title="Android UI适配？"></a>Android UI适配？</h2><h2 id="App优化"><a href="#App优化" class="headerlink" title="App优化"></a>App优化</h2><h2 id="图片优化"><a href="#图片优化" class="headerlink" title="图片优化"></a>图片优化</h2><h2 id="HybridApp-WebView和JS交互"><a href="#HybridApp-WebView和JS交互" class="headerlink" title="HybridApp WebView和JS交互"></a>HybridApp WebView和JS交互</h2><h2 id="Java-GC原理"><a href="#Java-GC原理" class="headerlink" title="Java GC原理"></a>Java GC原理</h2><h2 id="ANR"><a href="#ANR" class="headerlink" title="ANR"></a>ANR</h2><h2 id="设计模式"><a href="#设计模式" class="headerlink" title="设计模式"></a>设计模式</h2><h2 id="RxJava"><a href="#RxJava" class="headerlink" title="RxJava"></a>RxJava</h2><h2 id="MVP，MVC，MVVM"><a href="#MVP，MVC，MVVM" class="headerlink" title="MVP，MVC，MVVM"></a>MVP，MVC，MVVM</h2><h2 id="JNI"><a href="#JNI" class="headerlink" title="JNI"></a>JNI</h2><h2 id="RecyclerView和ListView区别"><a href="#RecyclerView和ListView区别" class="headerlink" title="RecyclerView和ListView区别"></a>RecyclerView和ListView区别</h2><h2 id="Universal-ImageLoader，Picasso，Fresco，Glide对比"><a href="#Universal-ImageLoader，Picasso，Fresco，Glide对比" class="headerlink" title="Universal-ImageLoader，Picasso，Fresco，Glide对比"></a>Universal-ImageLoader，Picasso，Fresco，Glide对比</h2><h2 id="Xutils，OkHttp，Volley，Retrofit对比"><a href="#Xutils，OkHttp，Volley，Retrofit对比" class="headerlink" title="Xutils，OkHttp，Volley，Retrofit对比"></a>Xutils，OkHttp，Volley，Retrofit对比</h2><p>要整合的面试题链接列表 </p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1708013">https://cloud.tencent.com/developer/article/1708013</a></li>
 </ul>
 
             </div>
